@@ -1,0 +1,35 @@
+import { getClient, type PreviewParams } from '@optimizely/cms-sdk';
+import { OptimizelyComponent } from '@optimizely/cms-sdk/react/server';
+import { PreviewComponent } from '@optimizely/cms-sdk/react/client';
+import { withAppContext } from '@optimizely/cms-sdk/react/server';
+import Script from 'next/script';
+
+type Props = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+async function Page({ searchParams }: Props) {
+  const client = getClient();
+
+  const content = await client.getPreviewContent(
+    // TODO: check types in runtime properly
+    (await searchParams) as PreviewParams,
+  );
+
+  return (
+    <>
+      <Script
+        src={
+          new URL(
+            '/util/javascript/communicationinjector.js',
+            process.env.OPTIMIZELY_CMS_URL,
+          ).href
+        }
+      ></Script>
+      <PreviewComponent />
+      <OptimizelyComponent content={content} />
+    </>
+  );
+}
+
+export default withAppContext(Page);

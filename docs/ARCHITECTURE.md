@@ -22,8 +22,18 @@ a **reference** to crib patterns from, not forked._
   modeling, component generation, and preview setup.
 
 ## 2. Scaffold structure (CONFIRMED — `nextjs-starter`, S1.1)
-Versions: **Next.js 16.2.1 (Turbopack)**, **React 19.2**, **TypeScript 5**,
-**`@optimizely/cms-sdk` ^2.1.0**, **`@optimizely/cms-cli` ^2.1.0**. Node 22+.
+Versions (all latest as of S1.1): **Next.js 16.2.11 (Turbopack)**, **React 19.2.8**,
+**`@optimizely/cms-sdk` 2.1.0**, **`@optimizely/cms-cli` 2.1.0**, **`eslint-config-next` 16.2.11**,
+**`@types/node` 26**. Node 22+ (dev on Node 26).
+
+### Dependency policy: latest, but green
+We track the **latest** versions. Two deliberate exceptions where the bleeding-edge major isn't
+yet supported by the toolchain (revisit when support lands):
+- **TypeScript pinned to 5.9.x** — TS **7** compiles our code (`tsc --noEmit` passes) but
+  **`next build` (16) rejects TS 7** (fails its TS detection, tries to auto-install, crashes).
+- **ESLint pinned to 9.x** — ESLint **10** + `eslint-config-next` crash the config loader.
+- Also fixed two scaffold issues: `next lint` was removed in Next 16 → `lint` now runs `eslint`
+  with a **native flat config** (dropped `FlatCompat`); `opti-push` un-hardcoded from pnpm.
 
 ```
 optimizely.config.mjs   # buildConfig(): components glob, propertyGroups (seo/meta/layout),

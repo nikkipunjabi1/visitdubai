@@ -6,7 +6,7 @@
     "dev": "next dev --experimental-https",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint",
     "type-check": "tsc --noEmit",
     "opti-login": "optimizely-cms-cli login",
     "opti-push": "optimizely-cms-cli config push optimizely.config.mjs"
@@ -17,18 +17,18 @@
     "@opentelemetry/sdk-node": "^0.217.0",
     "@opentelemetry/sdk-trace-node": "^2.7.1",
     "@optimizely/cms-sdk": "^2.1.0",
-    "next": "16.2.1",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "next": "^16.2.11",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@optimizely/cms-cli": "^2.1.0",
-    "@types/node": "^20",
+    "@types/node": "^26.1.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.2.4",
-    "typescript": "^5"
+    "eslint-config-next": "^16.2.11",
+    "typescript": "^5.9.3"
   }
 }

@@ -18,10 +18,9 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · 🚦 = phase gate (I as
 ## Phase 0 — Foundations 🟢 (planning)
 - [x] Kickoff decisions, research, and the full planning doc set.
 - [x] SDK decision: **official `@optimizely/cms-sdk`** (demo = reference); skills via marketplace.
-- [ ] **S0.1** Draft blog post #1 outline ("building in the open"). 🟢
-- [ ] **S0.2** Add the **Optimizely CMS Skills** (user runs in interactive Claude Code):
-  `/plugin marketplace add episerver/content-js-sdk` →
-  `/plugin install optimizely-cms-skills@episerver-content-js-sdk`. Prereq: Node 22+. 🟢
+- [x] **S0.1** Draft blog post #1 ("building in the open") → `blog/01-building-visit-dubai-in-the-open.md`. 🟢
+- [x] **S0.2** Add the **Optimizely CMS Skills** — installed to `~/.claude/skills/` (all 4:
+  setup/model/model-react/preview). 🟢
 
 ## 🚦 Phase 1 — Scaffold & baseline running  _(ask before starting)_
 Goal: a fresh official-SDK Next.js app runs locally against your dev CMS and deploys to Vercel,

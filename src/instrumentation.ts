@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- OpenTelemetry file-exporter shim (scaffold boilerplate) */
 const getCircularReplacer = () => {
   const seen = new WeakSet();
   return (_key: string, value: any) => {

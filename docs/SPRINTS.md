@@ -26,12 +26,10 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · 🚦 = phase gate (I as
 Goal: a fresh official-SDK Next.js app runs locally against your dev CMS and deploys to Vercel,
 with Visual Builder + live preview confirmed working — **before** we add Visit Dubai specifics.
 
-- [ ] **S1.1 — Scaffold with the official SDK** 🟡
-  Tasks: use the **`optimizely-setup` skill** → `@optimizely/cms-create-app` to scaffold into the
-  repo `github.com/nikkipunjabi1/visitdubai` (you create the empty repo; I scaffold locally, you
-  push). Installs `@optimizely/cms-sdk` + `@optimizely/cms-cli`; creates `optimizely.config.mjs`,
-  `optimizely.ts`, catch-all page, `.env` template. Deliverable: app installs + builds. Exit:
-  `npm run build` + typecheck clean. **Document the real scaffold structure back into ARCHITECTURE.md.**
+- [x] **S1.1 — Scaffold with the official SDK** 🟡 ✅
+  Scaffolded `nextjs-starter` (Next 16.2.1, React 19.2, `@optimizely/cms-sdk` 2.1) into the repo
+  root; added `.env.example`, `type-check`/`opti-*` scripts, gitignore updates; documented the real
+  structure in ARCHITECTURE.md §2/§5. **Exit met:** `npm run type-check` + `npm run build` clean.
 - [ ] **S1.2 — Connect CMS + Graph** 🟢
   Tasks: you fill `.env` with dev-CMS credentials; `optimizely-cms-cli login`; run dev; one real
   Graph query. Deliverable: local app renders content from your dev CMS. Exit: a page loads real

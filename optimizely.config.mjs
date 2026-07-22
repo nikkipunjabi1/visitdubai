@@ -1,68 +1,15 @@
 import { buildConfig } from '@optimizely/cms-sdk';
 
 export default buildConfig({
-  components: ['./src/components/**.tsx', './src/components/**.ts'],
+  // Only Visit Dubai content types (under content/) are pushed to the CMS.
+  // The scaffold's demo components are intentionally excluded so they are not
+  // recreated in the cleaned instance. The `visit_dubai` application (site) is
+  // added in a later sprint once a Home experience exists to be its entry point.
+  components: ['./src/components/content/**/*.tsx'],
   propertyGroups: [
-    {
-      key: 'seo',
-      displayName: 'SEO',
-      sortOrder: 1,
-    },
-    {
-      key: 'meta',
-      displayName: 'Meta',
-      sortOrder: 2,
-    },
-    {
-      key: 'layout',
-      displayName: 'Layout',
-      sortOrder: 3,
-    },
+    { key: 'content', displayName: 'Content', sortOrder: 0 },
+    { key: 'seo', displayName: 'SEO', sortOrder: 1 },
   ],
-  content: [
-    {
-      key: 'AboutExperienceContent',
-      displayName: 'About Experience',
-      contentType: 'AboutExperience',
-    },
-    {
-      key: 'BlogExperienceContent',
-      displayName: 'Blog Experience',
-      contentType: 'BlogExperience',
-    },
-  ],
-  applications: [
-    {
-      key: 'nextjs_app',
-      entryPoint: 'AboutExperienceContent',
-      displayName: 'Next.js Template',
-      type: 'website',
-      isDefault: true,
-      useApplicationSpecificAssets: false,
-      hosts: [
-        {
-          authority: 'localhost:3001',
-          type: 'primary',
-          preferredUrlScheme: 'https',
-        },
-      ],
-      usePreviewTokens: true,
-    },
-    {
-      key: 'blog_app',
-      displayName: 'Blog App',
-      type: 'website',
-      isDefault: false,
-      entryPoint: 'BlogExperienceContent',
-      useApplicationSpecificAssets: false,
-      hosts: [
-        {
-          authority: 'localhost:3002',
-          type: 'primary',
-          preferredUrlScheme: 'https',
-        },
-      ],
-      usePreviewTokens: true,
-    },
-  ],
+  content: [],
+  applications: [],
 });

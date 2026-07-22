@@ -40,11 +40,21 @@ components that query/reference that data. Every routable type carries `SeoMetad
 | `Area` | Neighborhood/region | name, slug, description, heroImage, geo, SEO → `Place` |
 | `Itinerary` | Multi-day plan (also the AI Trip Planner output) | title, slug, days[{ dayNo, items[ref to POI/Event/Tour/Hotel], notes }], summary, heroImage, SEO |
 
-### Taxonomy / shared
+### Taxonomy (important — powers filtering, facets, and AI cards)
+`Category` is a **single faceted taxonomy type**, not a flat tag list. Each term declares a
+**`dimension`** (theme, cuisine, audience, amenity, interest, season, accessibility) so one type
+powers several independent taxonomies, supports **hierarchy** via a `parent` (`_self`) reference,
+and carries **`synonyms`** + **`description`**. Those two fields are deliberate: they give
+Optimizely Graph semantic search and the Phase-4 **AI card components** the vocabulary to match
+user intent (e.g. "Michelin star" → the *fine-dining* term via its synonyms) and to explain a
+result. Seed synonyms here can also seed Graph's synonym dictionary (OPTIMIZELY-RESEARCH.md §B).
+
+## Taxonomy / shared
 | Type | Purpose |
 |------|---------|
-| `Category` (tag) | Cross-cutting (beach, culture, dining, adventure, family, luxury, desert…) |
-| `SeoMetadata` (component) | title, description, canonical, ogImage, noindex — see SEO.md |
+| `Category` (taxonomy term) | **Faceted + hierarchical.** name, slug, **`dimension`** (theme/cuisine/audience/amenity/interest/season/accessibility), description, **synonyms** (feed semantic search + AI cards), **parent** (`_self` hierarchy), featured, icon |
+| `SiteSettings` (singleton) | `allowSearchIndexing` (global crawl switch, default OFF) + `robotsTxtCustom` — drives robots.txt (SEO.md) |
+| `SeoMetadata` (contract) | metaTitle, metaDescription, canonical, ogImage, **noindex**, **nofollow** — `extends`ed by every page (SEO.md) |
 | `MediaAsset` | image/video + alt text + credit/attribution (logged in ASSETS.md) |
 
 ### Visual Builder components (elements)

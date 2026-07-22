@@ -38,6 +38,7 @@ import SectionHeading, { SectionHeadingContentType } from '@/components/blocks/S
 import RichTextBlock, { RichTextBlockContentType } from '@/components/blocks/RichTextBlock';
 import Hero, { HeroBannerContentType } from '@/components/blocks/Hero';
 import { LayoutDisplayTemplate } from '@/components/blocks/LayoutDisplayTemplate';
+import HomePage, { HomePageContentType } from '@/components/content/HomePage';
 
 config({
   apiKey: process.env.OPTIMIZELY_GRAPH_SINGLE_KEY || "your api key here",
@@ -69,6 +70,7 @@ initContentTypeRegistry([
   SectionHeadingContentType,
   RichTextBlockContentType,
   HeroBannerContentType,
+  HomePageContentType,
 ]);
 
 initReactComponentRegistry({
@@ -101,6 +103,7 @@ initReactComponentRegistry({
     SectionHeading,
     RichTextBlock,
     HeroBanner: Hero,
+    HomePage,
   },
 });
 

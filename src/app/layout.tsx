@@ -33,6 +33,12 @@ import Location, { LocationContentType } from '@/components/Location';
 import BlankExperience from '@/components/BlankExperience';
 import FAQ, { FAQContentType } from '@/components/FAQ';
 
+// Visit Dubai Visual Builder blocks (S2.3)
+import SectionHeading, { SectionHeadingContentType } from '@/components/blocks/SectionHeading';
+import RichTextBlock, { RichTextBlockContentType } from '@/components/blocks/RichTextBlock';
+import Hero, { HeroBannerContentType } from '@/components/blocks/Hero';
+import { LayoutDisplayTemplate } from '@/components/blocks/LayoutDisplayTemplate';
+
 config({
   apiKey: process.env.OPTIMIZELY_GRAPH_SINGLE_KEY || "your api key here",
   graphUrl: process.env.OPTIMIZELY_GRAPH_GATEWAY,
@@ -60,6 +66,9 @@ initContentTypeRegistry([
   LocationContentType,
   BlankExperienceContentType,
   FAQContentType,
+  SectionHeadingContentType,
+  RichTextBlockContentType,
+  HeroBannerContentType,
 ]);
 
 initReactComponentRegistry({
@@ -89,6 +98,9 @@ initReactComponentRegistry({
     Location,
     BlankExperience,
     FAQ,
+    SectionHeading,
+    RichTextBlock,
+    HeroBanner: Hero,
   },
 });
 
@@ -97,6 +109,7 @@ initDisplayTemplateRegistry([
   TileColumnDisplayTemplate,
   LandingSectionDisplayTemplate,
   SquareDisplayTemplate,
+  LayoutDisplayTemplate,
 ]);
 
 // Display: Fraunces — a characterful, high-contrast serif for luxe editorial headlines.

@@ -1,10 +1,11 @@
 # Visit Dubai — Optimizely SaaS CMS + Next.js Demo
 
-> ⚠️ **Unofficial demo. Not affiliated with, sponsored by, or endorsed by Dubai's Department of
-> Economy and Tourism or "Visit Dubai".** This is an independent learning/showcase project built
-> on **Optimizely SaaS CMS**, **Optimizely Graph**, and **Optimizely Visual Builder** with a
-> **Next.js** frontend on Vercel. It uses an **original wordmark** (not the official logo) and
-> **royalty-free imagery** only (see `ASSETS.md`). Real place names/facts are used descriptively.
+> ⚠️ **Unofficial, independent demo project — for learning and showcase purposes only. Not
+> affiliated with, sponsored by, or endorsed by any official tourism authority, destination
+> brand, or government entity.** Built on **Optimizely SaaS CMS**, **Optimizely Graph**, and
+> **Optimizely Visual Builder** with a **Next.js** frontend on Vercel. All branding here is
+> **original**; imagery is **royalty-free** only (see `ASSETS.md`). Real place names/facts are
+> used descriptively.
 
 Repo: https://github.com/nikkipunjabi1/visitdubai · Hosting: Vercel (Hobby/free tier).
 

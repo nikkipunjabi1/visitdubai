@@ -79,7 +79,15 @@ Prompt Guard / Llama Guard (small, self-hostable) as the "armor" layer. All free
 ## 5. Privacy & data handling
 - Log **hashed** session ids, not raw PII; redact PII from stored queries (Presidio) where feasible.
 - `ANTHROPIC_API_KEY` and all keys **server-side only** (never `NEXT_PUBLIC_*`).
-- Retention policy on logs; admin dashboard behind auth; comply with the demo's privacy notice.
+- Retention policy on logs; comply with the demo's privacy notice.
+- **`/admin/*` auth — easiest first, upgrade later:**
+  - **Now (demo-grade):** Next.js **middleware Basic Auth** matching `/admin/*`, credentials from
+    Vercel **env vars** (~15 lines, $0, no external service). Good enough to gate the demo dashboard.
+  - **Later (per-user login, still free, no extra infra):** **Auth.js (NextAuth)** in-app with a
+    GitHub/Google provider + email allowlist, **or** **Supabase Auth** (reuse it if we adopt
+    Supabase for the AI logs — one service for auth + data).
+  - Skip self-hosted auth servers (e.g. authorizer.dev) — they need their own host + DB; overkill
+    for gating one admin area.
 
 ## 6. Scaling the AI implementation (later)
 - **Provider-agnostic** `ModelProvider` seam (default: Claude via Anthropic SDK; latest models).

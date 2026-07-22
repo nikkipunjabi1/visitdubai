@@ -39,8 +39,16 @@ export const SeoMetadataContract = contract({
     noindex: {
       type: 'boolean',
       displayName: 'Hide from search engines (noindex)',
+      description: 'When on, this page is excluded from search engines (robots: noindex).',
       group: 'seo',
       sortOrder: 5,
+    },
+    nofollow: {
+      type: 'boolean',
+      displayName: "Don't follow links on this page (nofollow)",
+      description: 'When on, search engines will not follow links from this page (robots: nofollow).',
+      group: 'seo',
+      sortOrder: 6,
     },
   },
 });

@@ -59,5 +59,6 @@ otel-output.log
 certificates/
 *.pem
 
+# Local CMS backups/snapshots — not project artifacts
 # Local CMS backups/snapshots (e.g. pre-cleanup manifests) — not project artifacts
 backups/

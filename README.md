@@ -43,6 +43,8 @@ Repo: https://github.com/nikkipunjabi1/visitdubai · Hosting: Vercel (Hobby/free
 | [docs/COMPONENT-STANDARDS.md](docs/COMPONENT-STANDARDS.md) | Component best practices, Light/Dark + Full/Container display settings, grid |
 | [docs/PREVIEW-WORKFLOW.md](docs/PREVIEW-WORKFLOW.md) | Stakeholder preview-before-publish workflow |
 | [docs/SEO.md](docs/SEO.md) | Server-rendered SEO tags + JSON-LD requirements |
+| [docs/AI-SEARCH.md](docs/AI-SEARCH.md) | AI search + trip planner (Graph semantic + Claude; no pgvector) |
+| [docs/AI-PLATFORM.md](docs/AI-PLATFORM.md) | AI observability, prompt admin, guardrails, safety, scaling |
 | [docs/OPTIMIZELY-RESEARCH.md](docs/OPTIMIZELY-RESEARCH.md) | Findings from official docs + reference repos |
 | [docs/BLOG-PLAN.md](docs/BLOG-PLAN.md) | Community blogging cadence toward MVP |
 

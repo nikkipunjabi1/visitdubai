@@ -59,10 +59,11 @@ multi-page site. 🔴 → split into these sprints:
   PointOfInterest, Event, Article, Tour, Hotel, Itinerary), pushed via `config push`. Config glob
   retargeted to `content/` so demo types aren't recreated. **Exit met:** all 9 verified in CMS via
   `config pull`. (Graph exposes `_<Type>` after schema propagation ~minutes + once content exists.)
-- [ ] **S2.3 — VB sections + first components + display templates** 🟡
-  `<SectionShell>` display settings (theme/width/spacing), Hero, SectionHeading, POICardGrid,
-  RichText — per COMPONENT-STANDARDS.md matrix. Exit: components editable in VB with Light/Dark +
-  Full/Container working.
+- [~] **S2.3 — VB sections + first components + display templates** 🟡 _(in progress)_
+  ✅ `LayoutDisplayTemplate` (theme/width/spacing) + `SectionHeading` + `RichTextBlock` wired to
+  `<SectionShell>`, pushed to CMS, build green. ⏭ Remaining: `Hero`, `POICardGrid` (data-fetching),
+  then verify in Visual Builder (needs an experience + live preview, S1.3). Blocks live under
+  `src/components/blocks/`; config glob includes `blocks/`; registered in layout.tsx.
 - [ ] **S2.4 — Home page experience** 🟡
 - [ ] **S2.5 — Listing pages + faceting** (Places/Events/Articles/Tours/Hotels) 🟡
 - [ ] **S2.6 — Detail pages** per type 🟡

@@ -78,9 +78,12 @@ multi-page site. 🔴 → split into these sprints:
 - 🏁 + Blog #5–#8 outlines.
 
 ## 🚦 Phase 4 — AI features (Claude)  _(ask before starting)_
-- [ ] **S4.1 — AI Search** (Graph retrieval → Claude → cards) 🔴
+- [ ] **S4.1 — AI Search** (Graph retrieval → Claude → cards) 🔴 — AI-SEARCH.md
 - [ ] **S4.2 — AI Trip Planner** (→ `Itinerary`) 🔴
-- [ ] **S4.3 — Opal for Arabic translation** (guided) 🟡
+- [ ] **S4.3 — "Visit Dubai Concierge" MCP server** (Graph-backed tools; stdio → remote HTTP on
+      Vercel / claude.ai connector; reuses the AI retrieval layer) 🔴 — MCP-SERVER.md
+- [ ] **S4.4 — AI observability + guardrails** (Langfuse; prompts-as-CMS-content; safety rails) 🟡 — AI-PLATFORM.md
+- [ ] **S4.5 — Opal for Arabic translation** (guided) 🟡
 
 ## 🚦 Phase 5 — Give back / MVP  _(ask before starting)_
 - [ ] **S5.1 — Extract + open-source the preview-link module** 🔴

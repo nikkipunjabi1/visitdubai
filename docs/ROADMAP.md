@@ -46,10 +46,13 @@ _Phased plan. Each phase ends with a working, deployable state and (usually) a b
   _"Semantic search with Optimizely Graph"_
 
 ## Phase 4 — AI features (Claude)
-- [ ] **AI Search**: NL query → Graph retrieval → Claude → rich result cards
+- [ ] **AI Search**: NL query → Graph retrieval → Claude → rich result cards (AI-SEARCH.md)
 - [ ] **AI Trip Planner**: constraints → itinerary grounded in CMS content
+- [ ] **"Visit Dubai Concierge" MCP server**: Graph-backed tools for any MCP client (stdio →
+      remote HTTP on Vercel / claude.ai connector); OSS + MVP candidate (MCP-SERVER.md)
+- [ ] **AI observability + guardrails**: Langfuse, prompts-as-CMS-content, safety rails (AI-PLATFORM.md)
 - [ ] Evaluate **Opal** integration
-- **Blog:** _"Building an AI trip planner on Optimizely Graph + Claude"_
+- **Blog:** _"AI trip planner on Optimizely Graph + Claude"_ + _"Building an Optimizely Graph MCP server"_
 
 ## Phase 5 — Give back to the community
 - [ ] Extract a reusable module/plugin (candidate: Graph semantic-search hook or JSON-LD

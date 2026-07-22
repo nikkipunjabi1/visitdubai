@@ -9,9 +9,9 @@ tags: [optimizely, saas-cms, optimizely-graph, visual-builder, nextjs, headless]
 > **Draft for your review.** Edit the voice/details freely before publishing. A short LinkedIn
 > variant can be spun off from the intro + "what I'll be sharing" section.
 
-> ⚠️ _This is an independent, unofficial learning project. It is not affiliated with, sponsored
-> by, or endorsed by Dubai's Department of Economy and Tourism or "Visit Dubai". It uses an
-> original wordmark and royalty-free imagery only._
+> ⚠️ _This is an independent, unofficial learning project — for learning and showcase purposes
+> only. It is not affiliated with, sponsored by, or endorsed by any official tourism authority,
+> destination brand, or government entity. It uses an original wordmark and royalty-free imagery only._
 
 ## Why I'm doing this in public
 

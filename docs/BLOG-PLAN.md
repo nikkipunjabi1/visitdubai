@@ -34,6 +34,7 @@ Blog when we hit any of:
 | 7 | EN + AR semantic search & localization on Optimizely SaaS | New/learning | 3 |
 | 8 | Core Web Vitals + on-demand revalidation with Graph webhooks (Vercel free) | Result | 3 |
 | 9 | Building an AI Trip Planner on Optimizely Graph + Claude | New (headline) | 4 |
+| 9b | Building an Optimizely Graph **MCP server** (content as tools for any AI) | New (headline) | 4 |
 | 10 | Using Optimizely Opal for Arabic translation | New/learning | 4 |
 | 11 | I open-sourced a stakeholder-preview module for Optimizely SaaS — here's how | Module | 5 |
 

@@ -45,6 +45,7 @@ Repo: https://github.com/nikkipunjabi1/visitdubai · Hosting: Vercel (Hobby/free
 | [docs/SEO.md](docs/SEO.md) | Server-rendered SEO tags + JSON-LD requirements |
 | [docs/AI-SEARCH.md](docs/AI-SEARCH.md) | AI search + trip planner (Graph semantic + Claude; no pgvector) |
 | [docs/AI-PLATFORM.md](docs/AI-PLATFORM.md) | AI observability, prompt admin, guardrails, safety, scaling |
+| [docs/MCP-SERVER.md](docs/MCP-SERVER.md) | "Visit Dubai Concierge" MCP server (Graph-backed tools) |
 | [docs/OPTIMIZELY-RESEARCH.md](docs/OPTIMIZELY-RESEARCH.md) | Findings from official docs + reference repos |
 | [docs/BLOG-PLAN.md](docs/BLOG-PLAN.md) | Community blogging cadence toward MVP |
 

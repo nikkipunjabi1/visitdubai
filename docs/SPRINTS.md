@@ -59,13 +59,15 @@ multi-page site. 🔴 → split into these sprints:
   PointOfInterest, Event, Article, Tour, Hotel, Itinerary), pushed via `config push`. Config glob
   retargeted to `content/` so demo types aren't recreated. **Exit met:** all 9 verified in CMS via
   `config pull`. (Graph exposes `_<Type>` after schema propagation ~minutes + once content exists.)
-- [~] **S2.3 — VB sections + first components + display templates** 🟡 _(in progress)_
-  ✅ `LayoutDisplayTemplate` (theme/width/spacing) + `SectionHeading` + `RichTextBlock` wired to
-  `<SectionShell>`, pushed to CMS, build green. ⏭ Remaining: `Hero`, `POICardGrid` (data-fetching),
-  then verify in Visual Builder (needs an experience + live preview, S1.3). Blocks live under
-  `src/components/blocks/`; config glob includes `blocks/`; registered in layout.tsx.
+- [x] **S2.3 — VB sections + first components + display templates** 🟡 ✅
+  `LayoutDisplayTemplate` (theme/width/spacing = the Light/Dark + Full/Container controls) +
+  `Hero` (key `HeroBanner`) + `SectionHeading` + `RichTextBlock`, all wired to `<SectionShell>`
+  from `displaySettings`; pushed (13 types + 1 template); build/type-check green. Blocks under
+  `src/components/blocks/`; glob + layout.tsx registrations updated. `POICardGrid` moved to S2.5
+  (data-driven cards; build with real seed content). **Verify-in-VB** needs S1.3 live preview + S2.4.
 - [ ] **S2.4 — Home page experience** 🟡
-- [ ] **S2.5 — Listing pages + faceting** (Places/Events/Articles/Tours/Hotels) 🟡
+- [ ] **S2.5 — Listing pages + faceting** (Places/Events/Articles/Tours/Hotels) + **`POICardGrid`**
+      VB block (data-driven cards, image/URL binding solved with real content) 🟡
 - [ ] **S2.6 — Detail pages** per type 🟡
 - [ ] **S2.7 — SEO helpers** (`buildMetadata`, `buildJsonLd`, sitemap, OG images) per SEO.md 🟡
 - [ ] **S2.8 — Seed content + royalty-free imagery + `ASSETS.md`** 🟡

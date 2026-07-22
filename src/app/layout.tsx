@@ -36,6 +36,7 @@ import FAQ, { FAQContentType } from '@/components/FAQ';
 // Visit Dubai Visual Builder blocks (S2.3)
 import SectionHeading, { SectionHeadingContentType } from '@/components/blocks/SectionHeading';
 import RichTextBlock, { RichTextBlockContentType } from '@/components/blocks/RichTextBlock';
+import Hero, { HeroBannerContentType } from '@/components/blocks/Hero';
 import { LayoutDisplayTemplate } from '@/components/blocks/LayoutDisplayTemplate';
 
 config({
@@ -67,6 +68,7 @@ initContentTypeRegistry([
   FAQContentType,
   SectionHeadingContentType,
   RichTextBlockContentType,
+  HeroBannerContentType,
 ]);
 
 initReactComponentRegistry({
@@ -98,6 +100,7 @@ initReactComponentRegistry({
     FAQ,
     SectionHeading,
     RichTextBlock,
+    HeroBanner: Hero,
   },
 });
 

@@ -58,3 +58,6 @@ otel-output.log
 # Local HTTPS certificates (next dev --experimental-https)
 certificates/
 *.pem
+
+# Local CMS backups/snapshots — not project artifacts
+backups/

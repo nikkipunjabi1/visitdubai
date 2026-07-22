@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Bodoni_Moda, Inter } from 'next/font/google';
+import { Fraunces, Hanken_Grotesk } from 'next/font/google';
 import './globals.css';
 import { BlankExperienceContentType, config, initContentTypeRegistry, initDisplayTemplateRegistry } from '@optimizely/cms-sdk';
 import { initReactComponentRegistry } from '@optimizely/cms-sdk/react/server';
@@ -99,13 +99,15 @@ initDisplayTemplateRegistry([
   SquareDisplayTemplate,
 ]);
 
-const serifFont = Bodoni_Moda({
-  variable: '--font-serif',
+// Display: Fraunces — a characterful, high-contrast serif for luxe editorial headlines.
+const displayFont = Fraunces({
+  variable: '--font-fraunces',
   subsets: ['latin'],
 });
 
-const sansFont = Inter({
-  variable: '--font-sans',
+// Body: Hanken Grotesk — a clean, modern grotesk for comfortable reading.
+const bodyFont = Hanken_Grotesk({
+  variable: '--font-hanken',
   subsets: ['latin'],
 });
 
@@ -115,7 +117,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' className={[serifFont.variable, sansFont.variable].join(' ')}>
+    <html lang='en' className={[displayFont.variable, bodyFont.variable].join(' ')}>
       <body>{children}</body>
     </html>
   );

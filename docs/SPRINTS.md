@@ -50,9 +50,10 @@ with Visual Builder + live preview confirmed working — **before** we add Visit
 Goal: Visit Dubai content types, the luxury design system, and all page templates — a real
 multi-page site. 🔴 → split into these sprints:
 
-- [ ] **S2.1 — Design foundation + layout primitives** 🟡
-  Tokens (light/dark), Tailwind theme, `next/font`, `<SectionShell>`/`<Container>`/`<Grid>`,
-  original wordmark, `/styleguide`. Exit: styleguide renders; grid + theming primitives work.
+- [x] **S2.1 — Design foundation + layout primitives** 🟡 ✅
+  Tailwind v4 + tokens (light/dark via `@theme inline`), Fraunces + Hanken Grotesk (`next/font`),
+  `<SectionShell>`/`<Container>`/`<Grid>`/`<Wordmark>`, `/styleguide`. **Exit met:** styleguide
+  renders; grid + light/dark theming verified in-browser; build/type-check/lint green.
 - [ ] **S2.2 — Content types (data) in CMS** 🟡
   PointOfInterest, Event, Article, Tour, Hotel, Area, Itinerary, Category, SeoMetadata (per
   CONTENT-MODEL.md). Exit: types exist; sample item queryable in Graph.

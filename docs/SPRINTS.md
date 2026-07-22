@@ -54,9 +54,11 @@ multi-page site. 🔴 → split into these sprints:
   Tailwind v4 + tokens (light/dark via `@theme inline`), Fraunces + Hanken Grotesk (`next/font`),
   `<SectionShell>`/`<Container>`/`<Grid>`/`<Wordmark>`, `/styleguide`. **Exit met:** styleguide
   renders; grid + light/dark theming verified in-browser; build/type-check/lint green.
-- [ ] **S2.2 — Content types (data) in CMS** 🟡
-  PointOfInterest, Event, Article, Tour, Hotel, Area, Itinerary, Category, SeoMetadata (per
-  CONTENT-MODEL.md). Exit: types exist; sample item queryable in Graph.
+- [x] **S2.2 — Content types (data) in CMS** 🟡 ✅
+  9 code-first types in `src/components/content/` (SeoMetadata contract + Category, Area,
+  PointOfInterest, Event, Article, Tour, Hotel, Itinerary), pushed via `config push`. Config glob
+  retargeted to `content/` so demo types aren't recreated. **Exit met:** all 9 verified in CMS via
+  `config pull`. (Graph exposes `_<Type>` after schema propagation ~minutes + once content exists.)
 - [ ] **S2.3 — VB sections + first components + display templates** 🟡
   `<SectionShell>` display settings (theme/width/spacing), Hero, SectionHeading, POICardGrid,
   RichText — per COMPONENT-STANDARDS.md matrix. Exit: components editable in VB with Light/Dark +

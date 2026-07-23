@@ -27,6 +27,7 @@ Blog when we hit any of:
 |---|---------------|---------|-------|
 | 1 | Why I'm building Visit Dubai on Optimizely SaaS (in the open) | Kickoff | 0 |
 | 2 | Optimizely SaaS CMS + Visual Builder on Vercel with Next.js — setup & gotchas | Challenge | 1 |
+| 2b | **Connecting a Next.js app to Optimizely CMS SaaS for live Visual Builder preview** — Application + preview tokens, local HTTPS (mkcert), and the registry-must-mirror-the-model gotcha (`13 errors in the GraphQL query` / `GraphMissingContentTypeError`) | 🧩 Challenge solved | 2 |
 | 3 | Content modeling for Visual Builder: pages vs experiences vs components | New/learning | 2 |
 | 4 | Server-rendered SEO + JSON-LD for every Optimizely SaaS page (Next.js) | New/learning | 2 |
 | 5 | **Shareable stakeholder previews for Optimizely SaaS + Next.js** (preview-before-publish) | New (headline) | 3 |

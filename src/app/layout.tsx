@@ -39,6 +39,8 @@ import RichTextBlock, { RichTextBlockContentType } from '@/components/blocks/Ric
 import Hero, { HeroBannerContentType } from '@/components/blocks/Hero';
 import { LayoutDisplayTemplate } from '@/components/blocks/LayoutDisplayTemplate';
 import HomePage, { HomePageContentType } from '@/components/content/HomePage';
+import type { Metadata } from 'next';
+import { getSiteSettings, buildTitleTemplate, buildTitleDefault } from '@/lib/seo';
 
 config({
   apiKey: process.env.OPTIMIZELY_GRAPH_SINGLE_KEY || "your api key here",
@@ -126,6 +128,21 @@ const bodyFont = Hanken_Grotesk({
   variable: '--font-hanken',
   subsets: ['latin'],
 });
+
+/**
+ * Root metadata. The title TEMPLATE comes from global CMS SiteSettings, so every
+ * page's title becomes "<page> | <tagline> | <site name>" and the site name is
+ * changeable in one publish (no per-page edits). Pages set only their own `title`.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: {
+      template: buildTitleTemplate(settings),
+      default: buildTitleDefault(settings),
+    },
+  };
+}
 
 export default function RootLayout({
   children,

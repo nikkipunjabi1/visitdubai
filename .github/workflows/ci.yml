@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Type-check
+        run: npm run type-check
+      - name: Lint
+        run: npm run lint
+      - name: Unit tests
+        run: npm run test:run
+      - name: Build
+        run: npm run build
+        env:
+          # Build tolerates missing creds (fetches are guarded / fail closed).
+          # If set as repo secrets, the build can pre-render against Graph.
+          OPTIMIZELY_GRAPH_SINGLE_KEY: ${{ secrets.OPTIMIZELY_GRAPH_SINGLE_KEY }}
+          OPTIMIZELY_GRAPH_GATEWAY: https://cg.optimizely.com/content/v2

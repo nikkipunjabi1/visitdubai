@@ -38,6 +38,7 @@ Blog when we hit any of:
 | 9b | Building an Optimizely Graph **MCP server** (content as tools for any AI) | New (headline) | 4 |
 | 10 | Using Optimizely Opal for Arabic translation | New/learning | 4 |
 | 11 | I open-sourced a stakeholder-preview module for Optimizely SaaS — here's how | Module | 5 |
+| 12 | **How to connect Optimizely CMP (Content Marketing Platform) with Optimizely SaaS CMS** — publishing/asset flow between CMP and CMS SaaS _(outline only for now; detailed write-up later)_ | New/learning | TBD |
 
 ## Post skeleton (reuse for each)
 1. The problem / what I set out to do

@@ -14,8 +14,13 @@ import { config, getClient } from '@optimizely/cms-sdk';
 */
 export const dynamic = 'force-dynamic';
 
+// A non-empty placeholder keeps `config()` from THROWING at module load when the
+// Graph key is absent (e.g. CI, which has no secrets) — the SDK rejects an empty
+// key outright. With a placeholder the module loads; the actual query below then
+// fails against Graph and is caught, so we fail closed (Disallow) exactly as
+// intended. Matches the fallback in src/app/layout.tsx.
 config({
-  apiKey: process.env.OPTIMIZELY_GRAPH_SINGLE_KEY ?? '',
+  apiKey: process.env.OPTIMIZELY_GRAPH_SINGLE_KEY || 'missing-graph-key',
   graphUrl: process.env.OPTIMIZELY_GRAPH_GATEWAY,
 });
 

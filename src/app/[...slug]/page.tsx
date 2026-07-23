@@ -13,7 +13,7 @@ const getByPath = cache((path: string) => getClient().getContentByPath(path));
 // Config / data content types that must NEVER be served as a public page (no URL,
 // not indexable) — e.g. the Site Settings singleton. They live in the tree for
 // authoring but the router treats their paths as 404. See docs/CONTENT-ARCHITECTURE.md §4.
-const NON_ROUTABLE_TYPES = new Set(['SiteSettings']);
+const NON_ROUTABLE_TYPES = new Set(['SiteSettings', 'Tag']);
 const isNonRoutable = (types: string[] = []) => types.some((t) => NON_ROUTABLE_TYPES.has(t));
 
 /**

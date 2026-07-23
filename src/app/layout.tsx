@@ -31,6 +31,8 @@ import ImageMedia, { ImageMediaContentType } from '@/components/media/ImageMedia
 // only — they're data on the POI, not rendered as their own components yet.
 import { AreaContentType } from '@/components/content/Area';
 import { CategoryContentType } from '@/components/content/Category';
+import { TagContentType } from '@/components/content/Tag';
+import { EventContentType } from '@/components/content/Event';
 
 import type { Metadata } from 'next';
 import { getSiteSettings, buildTitleTemplate, buildTitleDefault } from '@/lib/seo';
@@ -57,6 +59,8 @@ initContentTypeRegistry([
   PlacesToVisitPageContentType,
   PointOfInterestContentType,
   AreaContentType,
+  EventContentType,
+  TagContentType,
   CategoryContentType,
   ImageMediaContentType,
 ]);

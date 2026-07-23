@@ -8,6 +8,7 @@ import { SeoMetadataContract } from './SeoMetadata';
 import { PlacesToVisitPageContentType } from './PlacesToVisitPage';
 import { AreaContentType } from './Area';
 import { EventContentType } from './Event';
+import { TagContentType } from './Tag';
 import { SiteSettingsContentType } from './SiteSettings';
 
 /**
@@ -28,6 +29,7 @@ export const HomePageContentType = contentType({
     PlacesToVisitPageContentType,
     AreaContentType,
     EventContentType,
+    TagContentType,
     SiteSettingsContentType,
   ],
   properties: {

@@ -1,15 +1,27 @@
+import { cache } from 'react';
 import type { Metadata } from 'next';
 import { getClient } from '@optimizely/cms-sdk';
 import { OptimizelyComponent } from '@optimizely/cms-sdk/react/server';
-import { getSiteSettings, buildPageTitle } from '@/lib/seo';
+import { getSiteSettings, buildContentMetadata, type PageSeo } from '@/lib/seo';
+
+// Fetch the published Home experience once per request; `generateMetadata` and the
+// page component both need it, and `cache()` dedupes the Graph call.
+const getHome = cache(async () => {
+  try {
+    return await getClient().getContentByPath('/');
+  } catch {
+    return [];
+  }
+});
 
 // The root page shares the root layout's route segment, so Next's title template
-// doesn't wrap it — build the full title explicitly (still from global SiteSettings,
-// so a rebrand is one publish). → "Homepage | Unofficial Travel & Tourism Guide | Visit Dubai".
-// (S2.7 will source the page title from the experience's own SEO metaTitle.)
+// doesn't wrap it — build the full title explicitly from the Home experience's own
+// SEO `metaTitle` (segment) + global SiteSettings tagline/name. Rebrand = one publish.
+// Note: `/` reflects the PUBLISHED title; use /preview to see draft edits live.
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings();
-  return { title: { absolute: buildPageTitle(settings, 'Homepage') } };
+  const [content, settings] = await Promise.all([getHome(), getSiteSettings()]);
+  const seo = (content[0] ?? null) as PageSeo | null;
+  return buildContentMetadata(seo, settings, 'Home');
 }
 
 /**
@@ -18,12 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * placeholder. (Live editing happens via /preview; see docs/PREVIEW-WORKFLOW.md.)
  */
 export default async function Home() {
-  let content: Awaited<ReturnType<ReturnType<typeof getClient>['getContentByPath']>> = [];
-  try {
-    content = await getClient().getContentByPath('/');
-  } catch {
-    content = [];
-  }
+  const content = await getHome();
 
   if (content.length > 0) {
     return <OptimizelyComponent content={content[0]} />;

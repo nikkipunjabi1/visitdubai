@@ -27,6 +27,8 @@ import ImageMedia, { ImageMediaContentType } from '@/components/media/ImageMedia
 
 import type { Metadata } from 'next';
 import { getSiteSettings, buildTitleTemplate, buildTitleDefault } from '@/lib/seo';
+import { SiteHeader } from '@/components/layout/SiteHeader';
+import { SiteFooter } from '@/components/layout/SiteFooter';
 
 config({
   apiKey: process.env.OPTIMIZELY_GRAPH_SINGLE_KEY || "your api key here",
@@ -95,8 +97,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' className={[displayFont.variable, bodyFont.variable].join(' ')}>
-      <body>{children}</body>
+    // Dark by default (obsidian + champagne luxury). Individual sections opt into
+    // light via <SectionShell theme="light">. Keeps the whole site cohesive and
+    // removes any light gap below short pages.
+    <html
+      lang='en'
+      data-theme='dark'
+      className={[displayFont.variable, bodyFont.variable].join(' ')}
+    >
+      <body className='flex min-h-dvh flex-col bg-bg text-fg'>
+        <SiteHeader />
+        <main className='flex-1'>{children}</main>
+        <SiteFooter />
+      </body>
     </html>
   );
 }

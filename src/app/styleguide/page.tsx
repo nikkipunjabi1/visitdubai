@@ -37,7 +37,7 @@ function Divider() {
 
 export default function StyleGuidePage() {
   return (
-    <main>
+    <>
       {/* Hero — dark, cinematic */}
       <SectionShell theme="dark" spacing="spacious">
         <p className="eyebrow">Visit Dubai · Design System</p>
@@ -137,6 +137,6 @@ export default function StyleGuidePage() {
         <p className="eyebrow">width = &quot;full&quot;</p>
         <h2 className="mx-auto mt-4 max-w-[20ch] text-5xl">A full-bleed band, edge to edge.</h2>
       </SectionShell>
-    </main>
+    </>
   );
 }

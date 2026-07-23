@@ -32,6 +32,14 @@ export const HeroBannerContentType = contentType({
     },
     ctaLabel: { type: 'string', displayName: 'CTA label', group: 'content', sortOrder: 5 },
     ctaUrl: { type: 'url', displayName: 'CTA link', group: 'content', sortOrder: 6 },
+    ctaNewTab: {
+      type: 'boolean',
+      displayName: 'Open CTA link in a new tab',
+      description:
+        'When on, the link opens in a new browser tab (adds rel="noopener noreferrer" automatically). Recommended for external links.',
+      group: 'content',
+      sortOrder: 7,
+    },
   },
 });
 
@@ -48,7 +56,9 @@ export default function Hero({ content, displaySettings }: Props) {
       theme={(displaySettings?.theme as SectionTheme) ?? 'dark'}
       width={(displaySettings?.width as SectionWidth) ?? 'full'}
       spacing={(displaySettings?.spacing as SectionSpacing) ?? 'spacious'}
-      className="relative overflow-hidden"
+      // `isolate` gives the section its own stacking context so the -z-10 background
+      // image paints ABOVE the shell's opaque bg (otherwise it's hidden behind it).
+      className="relative isolate overflow-hidden"
     >
       {bg ? (
         <div className="absolute inset-0 -z-10">
@@ -73,6 +83,8 @@ export default function Hero({ content, displaySettings }: Props) {
         {content.ctaLabel && content.ctaUrl ? (
           <a
             href={content.ctaUrl.default ?? undefined}
+            target={content.ctaNewTab ? '_blank' : undefined}
+            rel={content.ctaNewTab ? 'noopener noreferrer' : undefined}
             className="mt-10 inline-block rounded-full bg-champagne px-7 py-3 text-sm font-semibold text-obsidian transition hover:bg-champagne-hi"
             {...pa('ctaLabel')}
           >

@@ -16,7 +16,7 @@ export const SiteSettingsContentType = contentType({
       type: 'string',
       displayName: 'Site name',
       description:
-        'Appended to every page title, e.g. "…| Visit Dubai". Change here to rebrand the whole site in one publish.',
+        'Appended to every page title, e.g. "…| This is Dubai". Change here to rebrand the whole site in one publish.',
       group: 'content',
       sortOrder: 1,
     },

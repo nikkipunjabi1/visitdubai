@@ -1,4 +1,4 @@
-# SEO Requirements — Visit Dubai
+# SEO Requirements — This is Dubai
 
 _Hard requirement: **every page must render its SEO tags server-side, on page load** — page
 title, meta description, canonical, Open Graph/Twitter, and **JSON-LD** structured data. Nothing

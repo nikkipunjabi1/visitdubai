@@ -1,4 +1,4 @@
-# Contributing & Workflow — Visit Dubai
+# Contributing & Workflow — This is Dubai
 
 Our DevOps branching/merging process. **`main` is protected and always deployable; all changes
 land via reviewed Pull Requests.**

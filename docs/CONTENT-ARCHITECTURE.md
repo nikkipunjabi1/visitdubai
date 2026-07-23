@@ -16,10 +16,10 @@ LISTING-PATTERN.md (listings), SEO.md._
 
 ## 2. The tree (multisite-ready)
 Every site lives under its own **site-root node**, so the CMS is multisite-ready from day one —
-adding *Visit Abu Dhabi* later is just another sibling subtree, no rework (see §8).
+adding *This is Abu Dhabi* later is just another sibling subtree, no rework (see §8).
 ```
 Root
-└─ Visit Dubai              SiteRoot   ← the site; an Application maps its host(s) here
+└─ This is Dubai              SiteRoot   ← the site; an Application maps its host(s) here
    ├─ Home                  Experience (HomePage)   ← Start Page   → /
    ├─ Places to Visit       PlacesToVisitPage                      → /places-to-visit
    │   └─ Point of Interest…                                        → /places-to-visit/<slug>
@@ -32,11 +32,11 @@ Root
    └─ Settings              Folder (not in site nav)
        └─ Site Settings      SiteSettings (singleton)               this site's brand / SEO / crawl
 ```
-- **Site root** (`Visit Dubai`) is the top of one site's content. The CMS **Application** binds the
+- **Site root** (`This is Dubai`) is the top of one site's content. The CMS **Application** binds the
   host(s) (`localhost:3000` dev, the Vercel domain in prod) to this node, with **Home** as the Start
   Page. URLs are computed **relative to the start page**, so Home = `/`, siblings = `/<segment>`.
   Home stays an Experience; sections are its **siblings** under the site root (an Experience can't
-  parent pages), which is why they nest under `Visit Dubai`, not under `Home`.
+  parent pages), which is why they nest under `This is Dubai`, not under `Home`.
 - **Section pages** (`PlacesToVisitPage`, `EventsPage`, `NeighbourhoodsPage`) share the listing
   pattern: SEO + heading/intro + `pageSize` + top/bottom composition zones, `mayContainTypes`
   their item type. See LISTING-PATTERN.md.
@@ -59,7 +59,7 @@ Root
 
 ## 4. Global settings — `SiteSettings` singleton
 - Lives under **Settings**. A single instance authors edit in one place.
-- Fields: `siteName` ("Visit Dubai"), `titleTagline`, `titleSeparator`, `allowSearchIndexing`
+- Fields: `siteName` ("This is Dubai"), `titleTagline`, `titleSeparator`, `allowSearchIndexing`
   (global crawl switch, default OFF), `robotsTxtCustom`. Drives the global title template
   (`<page> | <tagline> | <siteName>`) → rebrand in one publish. **(Gap today: the type is missing the
   brand fields and no instance exists — this step adds both.)**
@@ -79,7 +79,7 @@ Root
 
 ## 7. Migration (current → target)
 Current: everything hangs off **Root** — Home + Places to Visit (POIs nested ✓); loose Areas (3) &
-Events (3). Missing: the **`Visit Dubai` site root**, Events/Neighbourhoods sections, Taxonomy +
+Events (3). Missing: the **`This is Dubai` site root**, Events/Neighbourhoods sections, Taxonomy +
 Settings folders, `Tag` type, Site Settings instance, brand fields on `SiteSettings`. Dormant: 6
 stuck `Category` `_component` items.
 
@@ -87,15 +87,15 @@ Steps (code → seed → re-parent → **rebind app** → verify):
 1. **Types** (`config push`, `--force` where breaking; no live data at risk): `SiteRoot` (`_page`),
    `_folder` type, `Tag` (`_page`); brand fields on `SiteSettings`; `EventsPage`, `NeighbourhoodsPage`
    (+ card/detail components); a `tags` field on POI & Event.
-2. **Seed the shell:** create `Visit Dubai` (SiteRoot) under Root; then under it the **Taxonomy** +
+2. **Seed the shell:** create `This is Dubai` (SiteRoot) under Root; then under it the **Taxonomy** +
    **Settings** folders, **Events** + **Neighbourhoods** section pages, the **Site Settings** singleton,
    and the **Tag** terms (incl. *Festivals*).
-3. **Re-parent under `Visit Dubai`:** Home, Places to Visit (+ its POIs move with it), Areas →
+3. **Re-parent under `This is Dubai`:** Home, Places to Visit (+ its POIs move with it), Areas →
    Neighbourhoods, Events → Events. Tag items (Food/Shopping Festival → *Festivals*).
-4. **Rebind the Application (CMS UI — user step):** point the `visit_dubai` Application's content
-   root / Start Page at the new `Visit Dubai` → `Home`. This is an Application-config action the CLI
+4. **Rebind the Application (CMS UI — user step):** point the `this_is_dubai` Application's content
+   root / Start Page at the new `This is Dubai` → `Home`. This is an Application-config action the CLI
    can't do (Forbidden); I'll give exact clicks. ⚠️ Order matters — until rebound, URLs may shift.
-5. **Verify:** Home = `/`, sections = `/<segment>` (no stray `/visit-dubai/`); facets resolve; global
+5. **Verify:** Home = `/`, sections = `/<segment>` (no stray `/this-is-dubai/`); facets resolve; global
    title reads from Site Settings; breadcrumbs + preview work.
 6. **Docs:** fold taxonomy/CMA/multisite gotchas into OPTIMIZELY-BEST-PRACTICES.md + CONTENT-MODEL.md.
 
@@ -106,14 +106,14 @@ on this clean, multisite-ready structure.
 Each destination is a self-contained subtree + its own Application:
 ```
 Root
-├─ Visit Dubai      SiteRoot   → Application A: visitdubai.com      → Home + sections + Taxonomy + Settings
-├─ Visit Abu Dhabi  SiteRoot   → Application B: visitabudhabi.com   → its own Home + sections + …
-└─ Visit Sharjah    SiteRoot   → …
+├─ This is Dubai      SiteRoot   → Application A: thisisdubai.com      → Home + sections + Taxonomy + Settings
+├─ This is Abu Dhabi  SiteRoot   → Application B: visitabudhabi.com   → its own Home + sections + …
+└─ This is Sharjah    SiteRoot   → …
 ```
 - **Per-site isolation:** each site owns its Home, sections, Tags, and Site Settings — so brand, SEO,
   taxonomy and content never collide across sites. Add a site = add a SiteRoot subtree + an Application.
 - **Frontend:** the Next.js app is host-aware — `getContentByPath` already resolves by path **and**
   `url.base` (host). Multisite adds a host→site map; the same components render every site.
 - **Localization** (EN→AR later) is a language variation *within* a site, orthogonal to multisite.
-- We build **only Visit Dubai now**, but in this layout, so nothing needs re-parenting when more
+- We build **only This is Dubai now**, but in this layout, so nothing needs re-parenting when more
   destinations arrive.

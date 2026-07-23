@@ -7,7 +7,7 @@ import {
 import { SeoMetadataContract } from './SeoMetadata';
 
 /**
- * HomePage — the site's Visual Builder experience (the `visit_dubai` app's entry
+ * HomePage — the site's Visual Builder experience (the `this_is_dubai` app's entry
  * point). Authors compose it from the blocks in src/components/blocks/ (Hero,
  * SectionHeading, RichText…). Rendered by walking the composition node tree.
  */

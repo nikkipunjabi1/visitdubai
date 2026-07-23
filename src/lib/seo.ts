@@ -14,7 +14,7 @@ export type SiteSettings = {
 };
 
 const DEFAULTS: SiteSettings = {
-  siteName: 'Visit Dubai',
+  siteName: 'This is Dubai',
   titleTagline: 'Unofficial Travel & Tourism Guide',
   titleSeparator: '|',
 };
@@ -36,7 +36,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   }
 }
 
-/** Next.js title template — the page title fills `%s`, e.g. "Homepage | Unofficial Travel & Tourism Guide | Visit Dubai". */
+/** Next.js title template — the page title fills `%s`, e.g. "Homepage | Unofficial Travel & Tourism Guide | This is Dubai". */
 export function buildTitleTemplate(s: SiteSettings): string {
   const sep = ` ${s.titleSeparator} `;
   return ['%s', s.titleTagline, s.siteName].filter(Boolean).join(sep);

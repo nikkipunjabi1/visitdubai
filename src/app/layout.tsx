@@ -15,13 +15,13 @@ import { initReactComponentRegistry } from '@optimizely/cms-sdk/react/server';
 import BlankExperience from '@/components/BlankExperience';
 import BlankSection from '@/components/BlankSection';
 
-// Visit Dubai Visual Builder blocks (S2.3).
+// This is Dubai Visual Builder blocks (S2.3).
 import SectionHeading, { SectionHeadingContentType } from '@/components/blocks/SectionHeading';
 import RichTextBlock, { RichTextBlockContentType } from '@/components/blocks/RichTextBlock';
 import Hero, { HeroBannerContentType } from '@/components/blocks/Hero';
 import { LayoutDisplayTemplate } from '@/components/blocks/LayoutDisplayTemplate';
 
-// Visit Dubai experiences, pages + media.
+// This is Dubai experiences, pages + media.
 import HomePage, { HomePageContentType } from '@/components/content/HomePage';
 import PlacesToVisitPage, { PlacesToVisitPageContentType } from '@/components/content/PlacesToVisitPage';
 import PointOfInterest, { PointOfInterestContentType } from '@/components/content/PointOfInterest';

@@ -92,7 +92,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   ]);
   const node = content[0] as (PageSeo & { name?: string; _metadata?: { displayName?: string } }) | undefined;
   if (!node) return {};
-  const fallback = node.name ?? node._metadata?.displayName ?? 'Visit Dubai';
+  const fallback = node.name ?? node._metadata?.displayName ?? 'This is Dubai';
   return buildContentMetadata(node, settings, fallback);
 }
 

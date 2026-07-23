@@ -4,7 +4,7 @@ _Standard requirement: authors must be able to **share a link to unpublished con
 page, or new/edited components on a page) with stakeholders **before** it goes live. Stakeholders
 review via the link; once approved, the author publishes and it appears live._
 
-This is a first-class feature of Visit Dubai — and a strong **community-module / MVP** candidate,
+This is a first-class feature of This is Dubai — and a strong **community-module / MVP** candidate,
 because Optimizely SaaS CMS does **not** ship a durable, login-free, shareable preview link out of
 the box (its built-in preview token is short-lived, ~5 min, tied to the editor session).
 
@@ -28,7 +28,7 @@ The thing you actually asked for. A link an author generates and sends to a stak
 1. **Generate a signed link.** A route `/api/preview/share` (author-triggered) mints a **signed
    token** (JWT/HMAC, server-side secret) encoding `{ contentKey, version | "latest-draft",
    locale, exp }`. Returns a URL like:
-   `https://visit-dubai.vercel.app/preview/share?token=<signed>`.
+   `https://this-is-dubai.vercel.app/preview/share?token=<signed>`.
 2. **Stakeholder opens the link.** The `/preview/share` route:
    - verifies the signed token (rejects expired/tampered) — no CMS auth needed by the viewer;
    - enables **Next.js Draft Mode** (sets the draft cookie) and redirects to the content's path;

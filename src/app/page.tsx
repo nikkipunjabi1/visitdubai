@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * Site root. Renders the published Home experience (visit_dubai app entry point)
+ * Site root. Renders the published Home experience (this_is_dubai app entry point)
  * fetched from Graph by path. Until it is composed + published, shows a friendly
  * placeholder. (Live editing happens via /preview; see docs/PREVIEW-WORKFLOW.md.)
  */
@@ -38,7 +38,7 @@ export default async function Home() {
 
   return (
     <div className="under-construction">
-      <h1>Visit Dubai — coming together</h1>
+      <h1>This is Dubai — coming together</h1>
       <p>
         The Home experience isn’t published yet. Compose it in Visual Builder and publish, or
         preview it live via <code>/preview</code>.

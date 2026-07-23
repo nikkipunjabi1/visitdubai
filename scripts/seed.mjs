@@ -153,7 +153,7 @@ const pois = [
 ];
 
 const events = [
-  { slug: 'dubai-shopping-festival', displayName: 'Dubai Shopping Festival', props: { name: S('Dubai Shopping Festival'), summary: S('The city’s flagship retail, entertainment and fireworks festival.'), startDate: S('2026-12-15T00:00:00Z'), endDate: S('2027-01-29T00:00:00Z'), ticketUrl: S('https://www.visitdubai.com/') } },
+  { slug: 'dubai-shopping-festival', displayName: 'Dubai Shopping Festival', props: { name: S('Dubai Shopping Festival'), summary: S('The city’s flagship retail, entertainment and fireworks festival.'), startDate: S('2026-12-15T00:00:00Z'), endDate: S('2027-01-29T00:00:00Z'), ticketUrl: S('https://www.dubai.com/') } },
   { slug: 'dubai-food-festival', displayName: 'Dubai Food Festival', props: { name: S('Dubai Food Festival'), summary: S('A city-wide celebration of Dubai’s diverse culinary scene.'), startDate: S('2027-02-20T00:00:00Z'), endDate: S('2027-03-08T00:00:00Z') } },
   { slug: 'dubai-world-cup', displayName: 'Dubai World Cup', props: { name: S('Dubai World Cup'), summary: S('The world’s richest horse-racing day at Meydan Racecourse.'), startDate: S('2027-03-27T00:00:00Z') } },
 ];

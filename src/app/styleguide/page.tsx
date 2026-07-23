@@ -4,7 +4,7 @@ import { Grid } from '@/components/ui/Grid';
 import { Wordmark } from '@/components/ui/Wordmark';
 
 export const metadata: Metadata = {
-  title: 'Style Guide — Visit Dubai',
+  title: 'Style Guide — This is Dubai',
   robots: { index: false, follow: false },
 };
 
@@ -40,7 +40,7 @@ export default function StyleGuidePage() {
     <>
       {/* Hero — dark, cinematic */}
       <SectionShell theme="dark" spacing="spacious">
-        <p className="eyebrow">Visit Dubai · Design System</p>
+        <p className="eyebrow">This is Dubai · Design System</p>
         <div className="mt-6 flex items-center justify-between">
           <Wordmark className="text-3xl" />
           <span className="text-xs text-muted">v0.1 · sleek-modern-luxury</span>
@@ -51,7 +51,7 @@ export default function StyleGuidePage() {
           meets the <span className="text-accent italic">sea</span>.
         </h1>
         <p className="mt-8 max-w-[42ch] text-lg text-muted">
-          The visual language for Visit Dubai — obsidian &amp; champagne, editorial restraint,
+          The visual language for This is Dubai — obsidian &amp; champagne, editorial restraint,
           photography-first. Built to feel crafted, never templated.
         </p>
         <div className="mt-10 flex flex-wrap gap-4">

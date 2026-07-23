@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 /*
-  Visit Dubai — design tokens (sleek-modern-luxury: obsidian + champagne).
+  This is Dubai — design tokens (sleek-modern-luxury: obsidian + champagne).
   Palette + fonts live in @theme (→ Tailwind utilities). Semantic tokens
   (--bg/--fg/--accent/…) flip with `data-theme` so <SectionShell> can force
   light/dark; children inherit. See docs/DESIGN-SYSTEM.md + COMPONENT-STANDARDS.md.

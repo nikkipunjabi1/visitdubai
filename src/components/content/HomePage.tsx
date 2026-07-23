@@ -38,11 +38,9 @@ export default function HomePage({
   content: ContentProps<typeof HomePageContentType>;
 }) {
   return (
-    <main>
-      <OptimizelyComposition
-        nodes={content.composition.nodes ?? []}
-        ComponentWrapper={ComponentWrapper}
-      />
-    </main>
+    <OptimizelyComposition
+      nodes={content.composition.nodes ?? []}
+      ComponentWrapper={ComponentWrapper}
+    />
   );
 }

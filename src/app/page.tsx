@@ -37,12 +37,12 @@ export default async function Home() {
   }
 
   return (
-    <main className="under-construction">
+    <div className="under-construction">
       <h1>Visit Dubai — coming together</h1>
       <p>
         The Home experience isn’t published yet. Compose it in Visual Builder and publish, or
         preview it live via <code>/preview</code>.
       </p>
-    </main>
+    </div>
   );
 }

@@ -48,6 +48,8 @@ Repo: https://github.com/nikkipunjabi1/visitdubai · Hosting: Vercel (Hobby/free
 | [docs/AI-PLATFORM.md](docs/AI-PLATFORM.md) | AI observability, prompt admin, guardrails, safety, scaling |
 | [docs/MCP-SERVER.md](docs/MCP-SERVER.md) | "Visit Dubai Concierge" MCP server (Graph-backed tools) |
 | [docs/OPTIMIZELY-RESEARCH.md](docs/OPTIMIZELY-RESEARCH.md) | Findings from official docs + reference repos |
+| [docs/OPTIMIZELY-BEST-PRACTICES.md](docs/OPTIMIZELY-BEST-PRACTICES.md) | Playbook: modeling, VB, Graph, SEO, perf, security, gotchas |
+| [docs/QUALITY.md](docs/QUALITY.md) | Testing/CI strategy + quality gates |
 | [docs/BLOG-PLAN.md](docs/BLOG-PLAN.md) | Community blogging cadence toward MVP |
 
 ## Status

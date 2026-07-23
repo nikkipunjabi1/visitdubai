@@ -33,6 +33,9 @@ if (!CLIENT_ID || !CLIENT_SECRET) {
 
 const keyFor = (slug) => createHash('md5').update(slug).digest('hex');
 const S = (value) => ({ value }); // scalar / array / url property (url written as a plain string)
+// Content references are written as "cms://content/<key>" strings.
+const REF = (slug) => ({ value: `cms://content/${keyFor(slug)}` });
+const REFS = (slugs) => ({ value: slugs.map((s) => `cms://content/${keyFor(s)}`) });
 const PLACES_KEY = keyFor('places-to-visit');
 
 async function getToken() {
@@ -74,29 +77,27 @@ async function publishLatest(token, key, label) {
 
 async function upsert(token, { slug, contentType, container, routable, displayName, properties, reparent }) {
   const key = keyFor(slug);
-  const initialVersion = { locale: LOCALE, displayName, ...(routable ? { routeSegment: slug } : {}), properties };
-  const create = await api(token, 'POST', '/content', { key, contentType, container, initialVersion });
+  const version = { locale: LOCALE, displayName, ...(routable ? { routeSegment: slug } : {}), properties };
+  const create = await api(token, 'POST', '/content', { key, contentType, container, initialVersion: version });
 
   if (create.status === 201) {
-    const state = await publishLatest(token, key, displayName);
+    const state = await publishLatest(token, key);
     console.log(`✔ ${contentType.padEnd(18)} "${displayName}" — created + ${state}`);
     return;
   }
   if (create.status === 409) {
-    if (reparent) {
-      // Move an already-seeded item to its new parent (structural; keeps publish state).
-      const patch = await api(
-        token,
-        'PATCH',
-        `/content/${key}`,
-        { container },
-        { 'Content-Type': 'application/merge-patch+json' },
-      );
-      const state = patch.status >= 200 && patch.status < 300 ? 're-parented' : `patch ${patch.status}: ${JSON.stringify(patch.json).slice(0, 160)}`;
-      console.log(`↪ ${contentType.padEnd(18)} "${displayName}" — exists, ${state}`);
-    } else {
-      console.log(`• ${contentType.padEnd(18)} "${displayName}" — exists, skipping`);
+    // Already exists → make it current: (optionally) re-parent, then write a fresh
+    // version with the full properties (adds new fields like references) and publish.
+    if (reparent && container) {
+      await api(token, 'PATCH', `/content/${key}`, { container }, { 'Content-Type': 'application/merge-patch+json' });
     }
+    const nv = await api(token, 'POST', `/content/${key}/versions`, version);
+    if (nv.status !== 201 && nv.status !== 200) {
+      console.log(`✖ ${contentType.padEnd(18)} "${displayName}" — new version ${nv.status}: ${JSON.stringify(nv.json).slice(0, 300)}`);
+      return;
+    }
+    const state = await publishLatest(token, key);
+    console.log(`↻ ${contentType.padEnd(18)} "${displayName}" — updated + ${state}`);
     return;
   }
   console.log(`✖ ${contentType.padEnd(18)} "${displayName}" — create ${create.status}: ${JSON.stringify(create.json).slice(0, 400)}`);
@@ -139,16 +140,16 @@ const categories = [
 ];
 
 const pois = [
-  { slug: 'burj-khalifa', displayName: 'Burj Khalifa', props: { name: S('Burj Khalifa'), summary: S('The world’s tallest building, soaring 828m above Downtown Dubai.'), latitude: S(25.197197), longitude: S(55.274376), priceBand: S('$$$'), accolades: S(['Tallest building in the world']), openingHours: S('Daily 09:00–23:00') } },
-  { slug: 'the-dubai-fountain', displayName: 'The Dubai Fountain', props: { name: S('The Dubai Fountain'), summary: S('A choreographed water, light and music spectacle on the Burj Lake.'), latitude: S(25.1955), longitude: S(55.2764), priceBand: S('free'), accolades: S(['One of the world’s largest choreographed fountains']), openingHours: S('Shows every 30 min, 18:00–23:00') } },
-  { slug: 'dubai-mall', displayName: 'The Dubai Mall', props: { name: S('The Dubai Mall'), summary: S('One of the world’s largest malls — retail, aquarium, ice rink and more.'), latitude: S(25.1972), longitude: S(55.2796), priceBand: S('free'), openingHours: S('Daily 10:00–24:00') } },
-  { slug: 'burj-al-arab', displayName: 'Burj Al Arab', props: { name: S('Burj Al Arab'), summary: S('The sail-shaped icon of Jumeirah, among the world’s most luxurious hotels.'), latitude: S(25.1412), longitude: S(55.1853), priceBand: S('$$$$'), accolades: S(['Iconic sail-shaped landmark']) } },
-  { slug: 'palm-jumeirah', displayName: 'Palm Jumeirah', props: { name: S('Palm Jumeirah'), summary: S('The palm-shaped archipelago of beaches, resorts and the Atlantis.'), latitude: S(25.1124), longitude: S(55.139), priceBand: S('free') } },
-  { slug: 'dubai-marina-walk', displayName: 'Dubai Marina Walk', props: { name: S('Dubai Marina Walk'), summary: S('A 7km waterfront promenade of cafés, dining and yacht views.'), latitude: S(25.0805), longitude: S(55.1403), priceBand: S('free'), openingHours: S('Open 24 hours') } },
-  { slug: 'museum-of-the-future', displayName: 'Museum of the Future', props: { name: S('Museum of the Future'), summary: S('An award-winning museum of innovation inside a striking calligraphy-clad torus.'), latitude: S(25.2197), longitude: S(55.2820), priceBand: S('$$$'), accolades: S(['Award-winning architecture']), openingHours: S('Daily 10:00–19:30') } },
-  { slug: 'al-fahidi-neighbourhood', displayName: 'Al Fahidi Historical Neighbourhood', props: { name: S('Al Fahidi Historical Neighbourhood'), summary: S('Wind-tower houses and galleries in one of Dubai’s oldest districts.'), latitude: S(25.2637), longitude: S(55.2996), priceBand: S('free'), openingHours: S('Open 24 hours') } },
-  { slug: 'gold-souk', displayName: 'Gold Souk', props: { name: S('Gold Souk'), summary: S('Deira’s legendary market glittering with gold, jewellery and trade.'), latitude: S(25.2716), longitude: S(55.2971), priceBand: S('free'), openingHours: S('Sat–Thu 10:00–22:00') } },
-  { slug: 'jumeirah-beach', displayName: 'Jumeirah Beach', props: { name: S('Jumeirah Beach'), summary: S('A long stretch of white sand with skyline and Burj Al Arab views.'), latitude: S(25.2048), longitude: S(55.2708), priceBand: S('free'), openingHours: S('Open 24 hours') } },
+  { slug: 'burj-khalifa', displayName: 'Burj Khalifa', props: { name: S('Burj Khalifa'), summary: S('The world’s tallest building, soaring 828m above Downtown Dubai.'), latitude: S(25.197197), longitude: S(55.274376), priceBand: S('$$$'), accolades: S(['Tallest building in the world']), openingHours: S('Daily 09:00–23:00'), area: REF('downtown-dubai'), categories: REFS(['landmarks', 'luxury']) } },
+  { slug: 'the-dubai-fountain', displayName: 'The Dubai Fountain', props: { name: S('The Dubai Fountain'), summary: S('A choreographed water, light and music spectacle on the Burj Lake.'), latitude: S(25.1955), longitude: S(55.2764), priceBand: S('free'), accolades: S(['One of the world’s largest choreographed fountains']), openingHours: S('Shows every 30 min, 18:00–23:00'), area: REF('downtown-dubai'), categories: REFS(['landmarks', 'family']) } },
+  { slug: 'dubai-mall', displayName: 'The Dubai Mall', props: { name: S('The Dubai Mall'), summary: S('One of the world’s largest malls — retail, aquarium, ice rink and more.'), latitude: S(25.1972), longitude: S(55.2796), priceBand: S('free'), openingHours: S('Daily 10:00–24:00'), area: REF('downtown-dubai'), categories: REFS(['landmarks', 'family']) } },
+  { slug: 'burj-al-arab', displayName: 'Burj Al Arab', props: { name: S('Burj Al Arab'), summary: S('The sail-shaped icon of Jumeirah, among the world’s most luxurious hotels.'), latitude: S(25.1412), longitude: S(55.1853), priceBand: S('$$$$'), accolades: S(['Iconic sail-shaped landmark']), area: REF('dubai-marina'), categories: REFS(['luxury', 'landmarks']) } },
+  { slug: 'palm-jumeirah', displayName: 'Palm Jumeirah', props: { name: S('Palm Jumeirah'), summary: S('The palm-shaped archipelago of beaches, resorts and the Atlantis.'), latitude: S(25.1124), longitude: S(55.139), priceBand: S('free'), area: REF('dubai-marina'), categories: REFS(['beaches', 'luxury']) } },
+  { slug: 'dubai-marina-walk', displayName: 'Dubai Marina Walk', props: { name: S('Dubai Marina Walk'), summary: S('A 7km waterfront promenade of cafés, dining and yacht views.'), latitude: S(25.0805), longitude: S(55.1403), priceBand: S('free'), openingHours: S('Open 24 hours'), area: REF('dubai-marina'), categories: REFS(['beaches', 'family']) } },
+  { slug: 'museum-of-the-future', displayName: 'Museum of the Future', props: { name: S('Museum of the Future'), summary: S('An award-winning museum of innovation inside a striking calligraphy-clad torus.'), latitude: S(25.2197), longitude: S(55.2820), priceBand: S('$$$'), accolades: S(['Award-winning architecture']), openingHours: S('Daily 10:00–19:30'), area: REF('downtown-dubai'), categories: REFS(['landmarks', 'culture-heritage']) } },
+  { slug: 'al-fahidi-neighbourhood', displayName: 'Al Fahidi Historical Neighbourhood', props: { name: S('Al Fahidi Historical Neighbourhood'), summary: S('Wind-tower houses and galleries in one of Dubai’s oldest districts.'), latitude: S(25.2637), longitude: S(55.2996), priceBand: S('free'), openingHours: S('Open 24 hours'), area: REF('old-dubai'), categories: REFS(['culture-heritage']) } },
+  { slug: 'gold-souk', displayName: 'Gold Souk', props: { name: S('Gold Souk'), summary: S('Deira’s legendary market glittering with gold, jewellery and trade.'), latitude: S(25.2716), longitude: S(55.2971), priceBand: S('free'), openingHours: S('Sat–Thu 10:00–22:00'), area: REF('old-dubai'), categories: REFS(['culture-heritage', 'family']) } },
+  { slug: 'jumeirah-beach', displayName: 'Jumeirah Beach', props: { name: S('Jumeirah Beach'), summary: S('A long stretch of white sand with skyline and Burj Al Arab views.'), latitude: S(25.2048), longitude: S(55.2708), priceBand: S('free'), openingHours: S('Open 24 hours'), area: REF('dubai-marina'), categories: REFS(['beaches', 'family']) } },
 ];
 
 const events = [

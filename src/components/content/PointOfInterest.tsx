@@ -58,7 +58,9 @@ export const PointOfInterestContentType = contentType({
       displayName: 'Categories',
       group: 'content',
       sortOrder: 6,
-      items: { type: 'content', allowedTypes: [CategoryContentType] },
+      // References to shared taxonomy terms (not inline components) so faceting /
+      // filtering can group by the same Category across many POIs.
+      items: { type: 'contentReference', allowedTypes: [CategoryContentType] },
     },
     latitude: {
       type: 'float',

@@ -1,4 +1,6 @@
-import { contentType } from '@optimizely/cms-sdk';
+import { contentType, type ContentProps } from '@optimizely/cms-sdk';
+import { getPreviewUtils } from '@optimizely/cms-sdk/react/server';
+import { SectionShell } from '@/components/ui/SectionShell';
 
 /**
  * Category — a faceted, hierarchical taxonomy term. This is the backbone of
@@ -6,11 +8,16 @@ import { contentType } from '@optimizely/cms-sdk';
  * + `description` give the AI/semantic search the vocabulary to match user
  * intent ("Michelin star" → fine dining), while `dimension` lets one type power
  * several distinct taxonomies (themes, cuisines, audiences, amenities…).
+ *
+ * Base type is `_page` (managed content): Graph can only resolve + FILTER a
+ * reference when the target is managed content, so this is what lets a POI's
+ * `categories` power the listing facets. It also gives us category landing pages
+ * later. (A `_component` cannot be a referenced/filterable taxonomy.)
  */
 export const CategoryContentType = contentType({
   key: 'Category',
   displayName: 'Category (Taxonomy term)',
-  baseType: '_component',
+  baseType: '_page',
   properties: {
     name: {
       type: 'string',
@@ -87,3 +94,27 @@ export const CategoryContentType = contentType({
     },
   },
 });
+
+export default function Category({
+  content,
+}: {
+  content: ContentProps<typeof CategoryContentType>;
+}) {
+  const { pa } = getPreviewUtils(content);
+  return (
+    <SectionShell theme="dark" spacing="spacious">
+      <div className="mx-auto max-w-page px-6 md:px-10 lg:px-16">
+        <p className="eyebrow">{content.dimension}</p>
+        <h1 className="mt-5 text-[clamp(2.25rem,5vw,3.75rem)]" {...pa('name')}>
+          {content.icon ? `${content.icon} ` : ''}
+          {content.name}
+        </h1>
+        {content.description ? (
+          <p className="mt-5 max-w-2xl text-lg text-muted" {...pa('description')}>
+            {content.description}
+          </p>
+        ) : null}
+      </div>
+    </SectionShell>
+  );
+}

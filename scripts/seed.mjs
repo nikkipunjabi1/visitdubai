@@ -164,7 +164,7 @@ async function main() {
 
   for (const p of listingPages) await upsert(token, { slug: p.slug, contentType: p.contentType, container: p.container, routable: true, displayName: p.displayName, properties: p.properties });
   for (const a of areas) await upsert(token, { slug: a.slug, contentType: 'Area', container: ROOT, routable: true, displayName: a.displayName, properties: a.props });
-  for (const c of categories) await upsert(token, { slug: c.slug, contentType: 'Category', container: ROOT, routable: false, displayName: c.displayName, properties: c.props });
+  for (const c of categories) await upsert(token, { slug: c.slug, contentType: 'Category', container: ROOT, routable: true, displayName: c.displayName, properties: c.props });
   // POIs live under Places to Visit → /places-to-visit/<slug>. reparent moves any already-seeded (flat) POIs.
   for (const p of pois) await upsert(token, { slug: p.slug, contentType: 'PointOfInterest', container: PLACES_KEY, routable: true, displayName: p.displayName, properties: p.props, reparent: true });
   for (const e of events) await upsert(token, { slug: e.slug, contentType: 'Event', container: ROOT, routable: true, displayName: e.displayName, properties: e.props });

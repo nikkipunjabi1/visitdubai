@@ -2,43 +2,29 @@ import React from 'react';
 
 import { Fraunces, Hanken_Grotesk } from 'next/font/google';
 import './globals.css';
-import { BlankExperienceContentType, config, initContentTypeRegistry, initDisplayTemplateRegistry } from '@optimizely/cms-sdk';
+import {
+  BlankExperienceContentType,
+  BlankSectionContentType,
+  config,
+  initContentTypeRegistry,
+  initDisplayTemplateRegistry,
+} from '@optimizely/cms-sdk';
 import { initReactComponentRegistry } from '@optimizely/cms-sdk/react/server';
 
-import Landing, { LandingPageContentType } from '@/components/Landing';
-import LandingSection, { LandingSectionContentType, LandingSectionDisplayTemplate } from '@/components/LandingSection';
-import SmallFeatureGrid, { SmallFeatureGridContentType } from '@/components/SmallFeatureGrid';
-import SmallFeature, { SmallFeatureContentType } from '@/components/SmallFeature';
-import VideoFeature, { VideoFeatureContentType } from '@/components/VideoFeature';
-import { HeroContentType } from '@/components/Hero';
-import Article, { ArticleContentType } from '@/components/Article';
-import LandingExperience, { LandingExperienceContentType } from '@/components/LandingExperience';
-import CallToAction, { CallToActionContentType } from '@/components/CallToAction';
-import BlankSection from '@/components/BlankSection';
-import BlogExperience, { BlogExperienceContentType } from '@/components/BlogExperience';
-import BlogCard, { BlogCardContentType } from '@/components/BlogCard';
-import Banner, { BannerContentType } from '@/components/Banner';
-import Tile, {
-  SquareTile,
-  SquareDisplayTemplate,
-  TileColumnDisplayTemplate,
-  TileContentType,
-  TileRowDisplayTemplate,
-} from '@/components/Tile';
-import AboutExperience, { AboutExperienceContentType } from '@/components/AboutExperience';
-import AboutUs, { AboutUsContentType } from '@/components/AboutUs';
-import MonthlySpecial, { MonthlySpecialContentType } from '@/components/MonthlySpecial';
-import OfficeLocations, { OfficeContentType } from '@/components/OfficeLocations';
-import Location, { LocationContentType } from '@/components/Location';
+// System Visual Builder types (provided by the SDK / present in every SaaS instance).
 import BlankExperience from '@/components/BlankExperience';
-import FAQ, { FAQContentType } from '@/components/FAQ';
+import BlankSection from '@/components/BlankSection';
 
-// Visit Dubai Visual Builder blocks (S2.3)
+// Visit Dubai Visual Builder blocks (S2.3).
 import SectionHeading, { SectionHeadingContentType } from '@/components/blocks/SectionHeading';
 import RichTextBlock, { RichTextBlockContentType } from '@/components/blocks/RichTextBlock';
 import Hero, { HeroBannerContentType } from '@/components/blocks/Hero';
 import { LayoutDisplayTemplate } from '@/components/blocks/LayoutDisplayTemplate';
+
+// Visit Dubai experiences + media.
 import HomePage, { HomePageContentType } from '@/components/content/HomePage';
+import ImageMedia, { ImageMediaContentType } from '@/components/media/ImageMedia';
+
 import type { Metadata } from 'next';
 import { getSiteSettings, buildTitleTemplate, buildTitleDefault } from '@/lib/seo';
 
@@ -47,75 +33,34 @@ config({
   graphUrl: process.env.OPTIMIZELY_GRAPH_GATEWAY,
 });
 
+// The registry must mirror the CMS content model: types registered here but
+// absent from Graph make the delivery/preview query fail ("errors in the
+// GraphQL query"); types in Graph but missing here throw
+// GraphMissingContentTypeError when resolved. The scaffold's Mosey Bank demo
+// types were deleted from the CMS, so they are intentionally NOT registered.
 initContentTypeRegistry([
   BlankExperienceContentType,
-  LandingSectionContentType,
-  LandingPageContentType,
-  SmallFeatureGridContentType,
-  SmallFeatureContentType,
-  VideoFeatureContentType,
-  HeroContentType,
-  ArticleContentType,
-  LandingExperienceContentType,
-  CallToActionContentType,
-  BlogExperienceContentType,
-  BlogCardContentType,
-  BannerContentType,
-  TileContentType,
-  AboutExperienceContentType,
-  AboutUsContentType,
-  MonthlySpecialContentType,
-  OfficeContentType,
-  LocationContentType,
-  BlankExperienceContentType,
-  FAQContentType,
+  BlankSectionContentType,
   SectionHeadingContentType,
   RichTextBlockContentType,
   HeroBannerContentType,
   HomePageContentType,
+  ImageMediaContentType,
 ]);
 
 initReactComponentRegistry({
   resolver: {
-    Landing,
-    LandingSection,
-    VideoFeature,
-    SmallFeatureGrid,
-    SmallFeature,
-    Article,
-    LandingExperience,
-    CallToAction,
-    BlankSection,
-    BlogCard,
-    BlogExperience,
-    Banner,
-    Tile: {
-      default: Tile,
-      tags: {
-        Square: SquareTile,
-      },
-    },
-    AboutExperience,
-    AboutUs,
-    MonthlySpecial,
-    OfficeLocations,
-    Location,
     BlankExperience,
-    FAQ,
+    BlankSection,
     SectionHeading,
     RichTextBlock,
     HeroBanner: Hero,
     HomePage,
+    ImageMedia,
   },
 });
 
-initDisplayTemplateRegistry([
-  TileRowDisplayTemplate,
-  TileColumnDisplayTemplate,
-  LandingSectionDisplayTemplate,
-  SquareDisplayTemplate,
-  LayoutDisplayTemplate,
-]);
+initDisplayTemplateRegistry([LayoutDisplayTemplate]);
 
 // Display: Fraunces — a characterful, high-contrast serif for luxe editorial headlines.
 const displayFont = Fraunces({

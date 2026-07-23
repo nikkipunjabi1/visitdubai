@@ -8,7 +8,22 @@ updates:
     groups:
       minor-and-patch:
         update-types: ['minor', 'patch']
+    ignore:
+      # Managed manually — these MAJORS break the Next 16 toolchain today
+      # (TS 7 fails `next build`; ESLint 10 breaks eslint-config-next).
+      # See docs/OPTIMIZELY-BEST-PRACTICES.md §12 + docs/QUALITY.md. Revisit when supported.
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'eslint'
+        update-types: ['version-update:semver-major']
   - package-ecosystem: github-actions
     directory: '/'
     schedule:
       interval: weekly
+    # Adopt Action majors deliberately (verify the version exists + works) rather
+    # than auto-bumping to a version the workflow can't resolve.
+    ignore:
+      - dependency-name: 'actions/checkout'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'actions/setup-node'
+        update-types: ['version-update:semver-major']

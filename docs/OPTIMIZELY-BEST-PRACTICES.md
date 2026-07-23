@@ -133,6 +133,18 @@ COMPONENT-STANDARDS.md, SEO.md, PREVIEW-WORKFLOW.md, QUALITY.md._
   cleaning a scaffold, **prune its demo types from `initContentTypeRegistry`/`initReactComponentRegistry`**
   the moment they're gone from the CMS — don't defer it. Keep the SDK system types (`BlankExperience`,
   `BlankSection`).
+- **Never construct the Graph client with an empty/dummy key.** The SDK throws on an empty key at
+  `config()`/`getClient()` — at *module load* for a route like `robots.ts`, which crashes the CI build
+  (no secrets) before any `try/catch` runs. Best practice: **lazy-init** — read the key, and only call
+  `config()` when it's present; if it's missing, fail closed (e.g. robots → `Disallow: /`) *without*
+  building a client. A placeholder key "works" but is a smell (real requests then 401 silently).
+- **Background image behind an opaque section = invisible.** A full-bleed banner that layers its image
+  at `-z-10` inside a section with a solid background must give that section its own **stacking context**
+  (`isolate` / `isolation: isolate`), or the negative-z image paints *behind* the section background.
+- **CTA "open in new tab" is a content field, not a link-editor option.** The CMS link dialog only does
+  Page/Media/Email/External — no `target`. Model an `openInNewTab` boolean alongside the link and apply
+  `target="_blank"` + `rel="noopener noreferrer"` in the component. (Extract a reusable Link contract once
+  more than one component needs a CTA.)
 - **Register the image asset type (`ImageMedia`, `baseType: '_image'`).** Uploaded images get this
   concrete type, and any `contentReference` with `allowedTypes: ['_image']` (e.g. a Hero background)
   resolves to it — so it *must* be registered or preview throws `GraphMissingContentTypeError`. Give it

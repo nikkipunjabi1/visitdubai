@@ -13,7 +13,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "opti-login": "optimizely-cms-cli login",
-    "opti-push": "optimizely-cms-cli config push optimizely.config.mjs"
+    "opti-push": "optimizely-cms-cli config push optimizely.config.mjs",
+    "seed": "node --env-file=.env scripts/seed.mjs"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",

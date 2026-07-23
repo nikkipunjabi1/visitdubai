@@ -1,4 +1,9 @@
-import { contentType } from '@optimizely/cms-sdk';
+import { contentType, type ContentProps } from '@optimizely/cms-sdk';
+import { getPreviewUtils } from '@optimizely/cms-sdk/react/server';
+import Link from 'next/link';
+import { SectionShell } from '@/components/ui/SectionShell';
+import { JsonLd } from '@/components/ui/JsonLd';
+import { priceLabel } from '@/lib/pois';
 import { SeoMetadataContract } from './SeoMetadata';
 import { AreaContentType } from './Area';
 import { CategoryContentType } from './Category';
@@ -101,3 +106,93 @@ export const PointOfInterestContentType = contentType({
     },
   },
 });
+
+export default function PointOfInterest({
+  content,
+}: {
+  content: ContentProps<typeof PointOfInterestContentType>;
+}) {
+  const { pa } = getPreviewUtils(content);
+  const price = priceLabel(content.priceBand ?? null);
+  const accolades = (content.accolades ?? []).filter((a): a is string => Boolean(a));
+  const hasGeo = content.latitude != null && content.longitude != null;
+  const mapUrl = hasGeo
+    ? `https://www.google.com/maps/search/?api=1&query=${content.latitude},${content.longitude}`
+    : null;
+
+  const jsonLd: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'TouristAttraction',
+    name: content.name,
+    ...(content.summary ? { description: content.summary } : {}),
+    ...(hasGeo
+      ? { geo: { '@type': 'GeoCoordinates', latitude: content.latitude, longitude: content.longitude } }
+      : {}),
+  };
+
+  return (
+    <SectionShell theme="dark" spacing="spacious">
+      <JsonLd data={jsonLd} />
+      <article className="mx-auto max-w-page px-6 md:px-10 lg:px-16">
+        <Link href="/places-to-visit" className="text-sm text-accent hover:underline">
+          ← Places to Visit
+        </Link>
+
+        <header className="mt-6 max-w-3xl">
+          <h1 className="text-[clamp(2.5rem,6vw,4.5rem)]" {...pa('name')}>
+            {content.name}
+          </h1>
+          {content.summary ? (
+            <p className="mt-6 text-xl text-muted" {...pa('summary')}>
+              {content.summary}
+            </p>
+          ) : null}
+        </header>
+
+        {accolades.length > 0 ? (
+          <ul className="mt-8 flex flex-wrap gap-2">
+            {accolades.map((a) => (
+              <li
+                key={a}
+                className="inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1 text-sm text-accent"
+              >
+                <span aria-hidden>★</span>
+                {a}
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
+        <dl className="mt-10 grid max-w-xl grid-cols-1 gap-x-8 gap-y-4 border-t border-line pt-8 sm:grid-cols-2">
+          {price ? (
+            <div>
+              <dt className="eyebrow">Price</dt>
+              <dd className="mt-1 text-lg">{price}</dd>
+            </div>
+          ) : null}
+          {content.openingHours ? (
+            <div>
+              <dt className="eyebrow">Opening hours</dt>
+              <dd className="mt-1 text-lg">{content.openingHours}</dd>
+            </div>
+          ) : null}
+          {mapUrl ? (
+            <div>
+              <dt className="eyebrow">Location</dt>
+              <dd className="mt-1 text-lg">
+                <a
+                  href={mapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  View on map →
+                </a>
+              </dd>
+            </div>
+          ) : null}
+        </dl>
+      </article>
+    </SectionShell>
+  );
+}

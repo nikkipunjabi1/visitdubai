@@ -15,7 +15,7 @@ export function POICardGrid({ pois }: { pois: PoiCard[] }) {
   return (
     <Grid>
       {pois.map((poi) => (
-        <div key={poi.slug || poi.name} className="col-span-4">
+        <div key={poi.path || poi.name} className="col-span-4">
           <POICard poi={poi} />
         </div>
       ))}

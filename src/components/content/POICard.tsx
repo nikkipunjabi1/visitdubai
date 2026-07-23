@@ -14,7 +14,7 @@ export function POICard({ poi }: { poi: PoiCard }) {
 
   return (
     <Link
-      href={`/places-to-visit/${poi.slug}`}
+      href={poi.path}
       className="group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-surface transition duration-300 hover:-translate-y-1 hover:border-accent focus-visible:-translate-y-1 focus-visible:border-accent focus-visible:outline-none"
     >
       {/* Gradient placeholder band (image goes here in v2). */}

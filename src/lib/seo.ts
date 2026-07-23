@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { getClient } from '@optimizely/cms-sdk';
 
 /**
@@ -55,4 +56,38 @@ export function buildTitleDefault(s: SiteSettings): string {
  */
 export function buildPageTitle(s: SiteSettings, pageTitle: string): string {
   return buildTitleTemplate(s).replace('%s', pageTitle);
+}
+
+/** The SEO fields authored on a page (from the `SeoMetadata` contract). */
+export type PageSeo = {
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  noindex?: boolean | null;
+  nofollow?: boolean | null;
+};
+
+/**
+ * Build Next.js `Metadata` for a page from its authored SEO fields + global
+ * settings. `metaTitle` is the page-specific SEGMENT only (e.g. "Home"); the
+ * global tagline + site name are always appended, so a rebrand stays a single
+ * publish. If `metaTitle` is blank we fall back to `fallbackSegment`.
+ *
+ * We emit `title.absolute` (the fully composed string) rather than relying on
+ * Next's title template, so it's correct on the root page too (the template
+ * doesn't wrap same-route-segment routes).
+ */
+export function buildContentMetadata(
+  seo: PageSeo | null | undefined,
+  settings: SiteSettings,
+  fallbackSegment: string,
+): Metadata {
+  const segment = (seo?.metaTitle ?? '').trim() || fallbackSegment;
+  const meta: Metadata = {
+    title: { absolute: buildPageTitle(settings, segment) },
+  };
+  if (seo?.metaDescription) meta.description = seo.metaDescription;
+  if (seo?.noindex || seo?.nofollow) {
+    meta.robots = { index: !seo?.noindex, follow: !seo?.nofollow };
+  }
+  return meta;
 }

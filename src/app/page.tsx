@@ -1,5 +1,16 @@
+import type { Metadata } from 'next';
 import { getClient } from '@optimizely/cms-sdk';
 import { OptimizelyComponent } from '@optimizely/cms-sdk/react/server';
+import { getSiteSettings, buildPageTitle } from '@/lib/seo';
+
+// The root page shares the root layout's route segment, so Next's title template
+// doesn't wrap it — build the full title explicitly (still from global SiteSettings,
+// so a rebrand is one publish). → "Homepage | Unofficial Travel & Tourism Guide | Visit Dubai".
+// (S2.7 will source the page title from the experience's own SEO metaTitle.)
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return { title: { absolute: buildPageTitle(settings, 'Homepage') } };
+}
 
 /**
  * Site root. Renders the published Home experience (visit_dubai app entry point)

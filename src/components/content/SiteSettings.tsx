@@ -11,6 +11,30 @@ export const SiteSettingsContentType = contentType({
   displayName: 'Site Settings',
   baseType: '_page',
   properties: {
+    // --- Global branding used in every page's <title> ---
+    siteName: {
+      type: 'string',
+      displayName: 'Site name',
+      description:
+        'Appended to every page title, e.g. "…| Visit Dubai". Change here to rebrand the whole site in one publish.',
+      group: 'content',
+      sortOrder: 1,
+    },
+    titleTagline: {
+      type: 'string',
+      displayName: 'Title tagline',
+      description: 'Optional middle segment of the title, e.g. "Unofficial Travel & Tourism Guide".',
+      group: 'content',
+      sortOrder: 2,
+    },
+    titleSeparator: {
+      type: 'string',
+      displayName: 'Title separator',
+      description: 'Separator between title segments (default "|").',
+      group: 'content',
+      sortOrder: 3,
+    },
+    // --- Crawl control ---
     allowSearchIndexing: {
       type: 'boolean',
       displayName: 'Allow search-engine indexing (global)',

@@ -1,14 +1,30 @@
-export default function Home() {
+import { getClient } from '@optimizely/cms-sdk';
+import { OptimizelyComponent } from '@optimizely/cms-sdk/react/server';
+
+/**
+ * Site root. Renders the published Home experience (visit_dubai app entry point)
+ * fetched from Graph by path. Until it is composed + published, shows a friendly
+ * placeholder. (Live editing happens via /preview; see docs/PREVIEW-WORKFLOW.md.)
+ */
+export default async function Home() {
+  let content: Awaited<ReturnType<ReturnType<typeof getClient>['getContentByPath']>> = [];
+  try {
+    content = await getClient().getContentByPath('/');
+  } catch {
+    content = [];
+  }
+
+  if (content.length > 0) {
+    return <OptimizelyComponent content={content[0]} />;
+  }
+
   return (
-    <>
-      <main className='under-construction'>
-        <h1>JS SDK demo page</h1>
-        <p>
-          To see some content in this site, create content in the CMS and go to
-          <code>/[locale]/[slug]</code>, where locale is the localization (for example &quot;en&quot;) and slug is the
-          path of the content
-        </p>
-      </main>
-    </>
+    <main className="under-construction">
+      <h1>Visit Dubai — coming together</h1>
+      <p>
+        The Home experience isn’t published yet. Compose it in Visual Builder and publish, or
+        preview it live via <code>/preview</code>.
+      </p>
+    </main>
   );
 }

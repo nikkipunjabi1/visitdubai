@@ -65,7 +65,12 @@ multi-page site. 🔴 → split into these sprints:
   from `displaySettings`; pushed (13 types + 1 template); build/type-check green. Blocks under
   `src/components/blocks/`; glob + layout.tsx registrations updated. `POICardGrid` moved to S2.5
   (data-driven cards; build with real seed content). **Verify-in-VB** needs S1.3 live preview + S2.4.
-- [ ] **S2.4 — Home page experience** 🟡
+- [~] **S2.4 — Home page experience** 🟡 _(code done; CMS authoring is the user's step)_
+  ✅ `HomePage` `_experience` type (extends SEO) + React component (`OptimizelyComposition`),
+  pushed; `/` renders the published Home via `getContentByPath('/')` with a graceful fallback.
+  ⏭ **User (CMS UI):** create the "Visit Dubai" application (host `localhost:3000`, HTTPS, preview
+  tokens) + a Home experience as its start page (our API key can't create content/apps —
+  Forbidden). Then compose it in VB → completes S1.3 (live preview) + verifies the display settings.
 - [ ] **S2.5 — Listing pages + faceting** (Places/Events/Articles/Tours/Hotels) + **`POICardGrid`**
       VB block (data-driven cards, image/URL binding solved with real content) 🟡
 - [ ] **S2.6 — Detail pages** per type 🟡

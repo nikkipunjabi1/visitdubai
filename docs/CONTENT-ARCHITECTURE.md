@@ -19,8 +19,7 @@ Every site lives under its own **site-root node**, so the CMS is multisite-ready
 adding *This is Abu Dhabi* later is just another sibling subtree, no rework (see §8).
 ```
 Root
-└─ This is Dubai              SiteRoot   ← the site; an Application maps its host(s) here
-   ├─ Home                  Experience (HomePage)   ← Start Page   → /
+└─ This is Dubai            HomePage Experience  ← Home = Site Root = Start Page  → /
    ├─ Places to Visit       PlacesToVisitPage                      → /places-to-visit
    │   └─ Point of Interest…                                        → /places-to-visit/<slug>
    ├─ Events                EventsPage                             → /events            [next]
@@ -32,11 +31,13 @@ Root
    └─ Settings              Folder (not in site nav)
        └─ Site Settings      SiteSettings (singleton)               this site's brand / SEO / crawl
 ```
-- **Site root** (`This is Dubai`) is the top of one site's content. The CMS **Application** binds the
-  host(s) (`localhost:3000` dev, the Vercel domain in prod) to this node, with **Home** as the Start
-  Page. URLs are computed **relative to the start page**, so Home = `/`, siblings = `/<segment>`.
-  Home stays an Experience; sections are its **siblings** under the site root (an Experience can't
-  parent pages), which is why they nest under `This is Dubai`, not under `Home`.
+- **Home IS the site root** (one node, e.g. "This is Dubai"): it's the Start Page the Application
+  binds its host(s) to (`localhost:3000` dev, the Vercel domain in prod) AND it parents the section
+  pages. URLs resolve relative to it → Home = `/`, children = `/<segment>`. No separate SiteRoot node,
+  and no Application rebind when restructuring (Home never moves).
+- **An Experience CAN parent pages** once it declares **`mayContainTypes`** — verified. (The earlier
+  "not allowed under parent" error was simply a missing `mayContainTypes`, not an Experience limitation.)
+  So `HomePage.mayContainTypes = [PlacesToVisitPage, EventsPage, NeighbourhoodsPage, Area, Event, SiteSettings]`.
 - **Section pages** (`PlacesToVisitPage`, `EventsPage`, `NeighbourhoodsPage`) share the listing
   pattern: SEO + heading/intro + `pageSize` + top/bottom composition zones, `mayContainTypes`
   their item type. See LISTING-PATTERN.md.
@@ -77,30 +78,29 @@ Root
 - Item `routeSegment` = slug of the name. Tags: kebab-case slug.
 - Folders named for authors ("Taxonomy", "Settings").
 
-## 7. Migration (current → target)
-Current: everything hangs off **Root** — Home + Places to Visit (POIs nested ✓); loose Areas (3) &
-Events (3). Missing: the **`This is Dubai` site root**, Events/Neighbourhoods sections, Taxonomy +
-Settings folders, `Tag` type, Site Settings instance, brand fields on `SiteSettings`. Dormant: 6
-stuck `Category` `_component` items.
+## 7. Migration
 
-Steps (code → seed → re-parent → **rebind app** → verify):
-1. **Types** (`config push`, `--force` where breaking; no live data at risk): `SiteRoot` (`_page`),
-   `_folder` type, `Tag` (`_page`); brand fields on `SiteSettings`; `EventsPage`, `NeighbourhoodsPage`
-   (+ card/detail components); a `tags` field on POI & Event.
-2. **Seed the shell:** create `This is Dubai` (SiteRoot) under Root; then under it the **Taxonomy** +
-   **Settings** folders, **Events** + **Neighbourhoods** section pages, the **Site Settings** singleton,
-   and the **Tag** terms (incl. *Festivals*).
-3. **Re-parent under `This is Dubai`:** Home, Places to Visit (+ its POIs move with it), Areas →
-   Neighbourhoods, Events → Events. Tag items (Food/Shopping Festival → *Festivals*).
-4. **Rebind the Application (CMS UI — user step):** point the `this_is_dubai` Application's content
-   root / Start Page at the new `This is Dubai` → `Home`. This is an Application-config action the CLI
-   can't do (Forbidden); I'll give exact clicks. ⚠️ Order matters — until rebound, URLs may shift.
-5. **Verify:** Home = `/`, sections = `/<segment>` (no stray `/this-is-dubai/`); facets resolve; global
-   title reads from Site Settings; breadcrumbs + preview work.
-6. **Docs:** fold taxonomy/CMA/multisite gotchas into OPTIMIZELY-BEST-PRACTICES.md + CONTENT-MODEL.md.
+### Phase 1 — site-root restructure ✅ DONE
+Home (renamed **"This is Dubai"**) is the site root: `HomePage.mayContainTypes` added, Places to Visit +
+Areas + Events re-parented under it, **Site Settings singleton** created (siteName "This is Dubai"). Root
+now has one content child. Home stays the Start Page at `/`, so **no Application rebind** was needed;
+all URLs verified clean (`/`, `/places-to-visit`, `/places-to-visit/<slug>`). Global title now reads from
+CMS Site Settings.
 
-_Then_ resume the listing-pattern build (breadcrumbs, composition zones, pagination, sort, filters)
-on this clean, multisite-ready structure.
+### Phase 2 — sections + taxonomy [next]
+1. **Types** (`config push --force`): `_folder` type; `Tag` (`_page`); `EventsPage`, `NeighbourhoodsPage`
+   (+ their components); a **`tags`** field (`contentReference`→`Tag`) on POI & Event; add
+   EventsPage/NeighbourhoodsPage to `HomePage.mayContainTypes`.
+2. **Seed:** **Taxonomy** + **Settings** folders (move Site Settings into Settings); **Events** +
+   **Neighbourhoods** section pages under Home; the **Tag** terms (incl. *Festivals*).
+3. **Re-parent + tag:** Areas → Neighbourhoods, Events → Events; tag Food/Shopping Festival → *Festivals*.
+4. **Verify:** `/events`, `/neighbourhoods` + children resolve; facets (Tag/Area/price) resolve; taxonomy
+   pages noindex.
+5. **Docs:** fold taxonomy/CMA/multisite gotchas into OPTIMIZELY-BEST-PRACTICES.md + CONTENT-MODEL.md.
+
+_Then_ resume the listing-pattern build (breadcrumbs, composition zones, pagination, sort, filters) on
+this clean, multisite-ready structure. (Dormant `_component` `Category` + its 6 stuck items: delete later
+via interactive `content delete`.)
 
 ## 8. Multisite (future — structured for it now)
 Each destination is a self-contained subtree + its own Application:

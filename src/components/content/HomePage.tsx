@@ -5,17 +5,31 @@ import {
   getPreviewUtils,
 } from '@optimizely/cms-sdk/react/server';
 import { SeoMetadataContract } from './SeoMetadata';
+import { PlacesToVisitPageContentType } from './PlacesToVisitPage';
+import { AreaContentType } from './Area';
+import { EventContentType } from './Event';
+import { SiteSettingsContentType } from './SiteSettings';
 
 /**
- * HomePage — the site's Visual Builder experience (the `this_is_dubai` app's entry
- * point). Authors compose it from the blocks in src/components/blocks/ (Hero,
- * SectionHeading, RichText…). Rendered by walking the composition node tree.
+ * HomePage — the site's home experience AND its site root (one node, e.g.
+ * "This is Dubai"). It's the Start Page (`/`) an Application binds its host to,
+ * and it also PARENTS the section pages, so the content tree is
+ * `Root → This is Dubai → {sections}` and URLs resolve relative to here.
+ * Multisite = one HomePage site-root + Application per destination.
+ * Authors compose the home canvas from the blocks in src/components/blocks/.
  */
 export const HomePageContentType = contentType({
   key: 'HomePage',
-  displayName: 'Home Page',
+  displayName: 'Home / Site Root',
   baseType: '_experience',
   extends: SeoMetadataContract,
+  // The site root contains the section pages + this site's settings.
+  mayContainTypes: [
+    PlacesToVisitPageContentType,
+    AreaContentType,
+    EventContentType,
+    SiteSettingsContentType,
+  ],
   properties: {
     internalTitle: {
       type: 'string',

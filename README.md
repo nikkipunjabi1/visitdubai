@@ -7,7 +7,7 @@
 > **original**; imagery is **royalty-free** only (see `ASSETS.md`). Real place names/facts are
 > used descriptively.
 
-Repo: https://github.com/nikkipunjabi1/this-is-dubai · Hosting: Vercel (Hobby/free tier).
+Repo: https://github.com/nikkipunjabi1/thisisdubai · Hosting: Vercel (Hobby/free tier).
 
 ## Why this project exists
 

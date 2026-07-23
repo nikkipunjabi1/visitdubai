@@ -26,7 +26,7 @@ and we **blog the journey** to build toward Optimizely MVP.
 | Brand name | **"This is Dubai"** (unofficial demo) — original wordmark + royalty-free imagery; clear not-affiliated disclaimer. **No official logo / copyrighted photos in the public repo.** |
 | Baseline codebase | **Official `@optimizely/cms-sdk`** (scaffold via `@optimizely/cms-create-app`); the `@remkoj` demo `cms-saas-vercel-demo` is a **reference only** |
 | Dev tooling | **Optimizely CMS Skills** (`optimizely-setup/model/model-react/preview`) via `/plugin marketplace add episerver/content-js-sdk` |
-| Repo | https://github.com/nikkipunjabi1/this-is-dubai (user creates/pushes) |
+| Repo | https://github.com/nikkipunjabi1/thisisdubai (user creates/pushes) |
 | Hosting | **Vercel Hobby (free tier)** |
 | First milestone | **Full multi-page site** (home + listing + detail page types) |
 | Localization | **English first**, i18n-ready; add **AR semantic search** on showcase pages (Phase 3); use **Optimizely Opal for AR translation** later (guided) |

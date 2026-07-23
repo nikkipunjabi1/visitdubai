@@ -4,26 +4,20 @@
 // Auth: OAuth client-credentials (OPTIMIZELY_CMS_CLIENT_ID/SECRET) against the
 // SaaS gateway. Flow per item: POST /v1/content (draft) -> publish the version.
 // Idempotent: deterministic keys (md5 of slug); an item that already exists
-// (409) is skipped, or (for re-parented items) PATCHed to its new container.
+// (409) is skipped, so re-running is safe.
 //
-// Content tree (CMS-managed URLs):
-//   Home (/)
-//   └─ Places to Visit (/places-to-visit)        [PlacesToVisitPage]
-//      └─ <PointOfInterest>  (/places-to-visit/<slug>)
-// Areas/Categories/Events currently sit under the root; they get their own
-// dedicated section pages when those listings are built.
-//
-// v1 seeds SCALAR + URL fields only; relationships (area, categories), images
-// and rich text come in v2 once the reference write-shapes are confirmed.
+// v1 seeds SCALAR + URL fields only (name, summary, geo, priceBand, accolades,
+// dates, taxonomy). Relationships (area, categories, images) + rich text come in
+// v2 once the reference payload shape is confirmed against a real item.
 
 import { createHash } from 'node:crypto';
 
 const GATEWAY = (process.env.OPTIMIZELY_CMS_API_URL || 'https://api.cms.optimizely.com').replace(/\/$/, '');
 const CLIENT_ID = process.env.OPTIMIZELY_CMS_CLIENT_ID;
 const CLIENT_SECRET = process.env.OPTIMIZELY_CMS_CLIENT_SECRET;
-// Site root (container of the existing Home experience). Root-level pages route
-// from "/", so a page here gets /{routeSegment}/.
-const ROOT = process.env.SEED_CONTAINER || '43f936c99b234ea397b261c538ad07c9';
+// Parent container for the seeded content. Defaults to this instance's site root
+// (the container of the existing Home experience). Override with SEED_CONTAINER.
+const CONTAINER = process.env.SEED_CONTAINER || '43f936c99b234ea397b261c538ad07c9';
 const LOCALE = process.env.SEED_LOCALE || 'en';
 
 if (!CLIENT_ID || !CLIENT_SECRET) {
@@ -32,8 +26,7 @@ if (!CLIENT_ID || !CLIENT_SECRET) {
 }
 
 const keyFor = (slug) => createHash('md5').update(slug).digest('hex');
-const S = (value) => ({ value }); // scalar / array / url property (url written as a plain string)
-const PLACES_KEY = keyFor('places-to-visit');
+const S = (value) => ({ value }); // scalar / array / url property (url is written as a plain string)
 
 async function getToken() {
   const res = await fetch(`${GATEWAY}/oauth/token`, {
@@ -61,67 +54,40 @@ async function api(token, method, path, body, extraHeaders = {}) {
   return { status: res.status, json };
 }
 
-async function publishLatest(token, key, label) {
+async function upsert(token, { slug, contentType, routable, displayName, properties }) {
+  const key = keyFor(slug);
+  const initialVersion = {
+    locale: LOCALE,
+    displayName,
+    ...(routable ? { routeSegment: slug } : {}),
+    properties,
+  };
+  const create = await api(token, 'POST', '/content', { key, contentType, container: CONTAINER, initialVersion });
+
+  if (create.status === 409) {
+    console.log(`• ${contentType.padEnd(16)} "${displayName}" — exists, skipping`);
+    return;
+  }
+  if (create.status !== 201) {
+    console.log(`✖ ${contentType.padEnd(16)} "${displayName}" — create ${create.status}: ${JSON.stringify(create.json).slice(0, 400)}`);
+    return;
+  }
+
+  // Publish the freshly-created draft version.
   const versions = await api(token, 'GET', `/content/${key}/versions`);
   const version = versions.json?.items?.[0]?.version;
-  if (!version) return `⚠ no version to publish`;
+  if (!version) {
+    console.log(`✔ ${contentType.padEnd(16)} "${displayName}" — created (⚠ no version found to publish)`);
+    return;
+  }
   const pub = await api(token, 'POST', `/content/${key}/versions/${version}:publish`, {});
-  // Publish succeeds with 204 (No Content) or 200.
-  return pub.status === 204 || pub.status === 200
-    ? 'published'
-    : `publish ${pub.status}: ${JSON.stringify(pub.json).slice(0, 160)}`;
-}
-
-async function upsert(token, { slug, contentType, container, routable, displayName, properties, reparent }) {
-  const key = keyFor(slug);
-  const initialVersion = { locale: LOCALE, displayName, ...(routable ? { routeSegment: slug } : {}), properties };
-  const create = await api(token, 'POST', '/content', { key, contentType, container, initialVersion });
-
-  if (create.status === 201) {
-    const state = await publishLatest(token, key, displayName);
-    console.log(`✔ ${contentType.padEnd(18)} "${displayName}" — created + ${state}`);
-    return;
-  }
-  if (create.status === 409) {
-    if (reparent) {
-      // Move an already-seeded item to its new parent (structural; keeps publish state).
-      const patch = await api(
-        token,
-        'PATCH',
-        `/content/${key}`,
-        { container },
-        { 'Content-Type': 'application/merge-patch+json' },
-      );
-      const state = patch.status >= 200 && patch.status < 300 ? 're-parented' : `patch ${patch.status}: ${JSON.stringify(patch.json).slice(0, 160)}`;
-      console.log(`↪ ${contentType.padEnd(18)} "${displayName}" — exists, ${state}`);
-    } else {
-      console.log(`• ${contentType.padEnd(18)} "${displayName}" — exists, skipping`);
-    }
-    return;
-  }
-  console.log(`✖ ${contentType.padEnd(18)} "${displayName}" — create ${create.status}: ${JSON.stringify(create.json).slice(0, 400)}`);
+  const state = pub.status === 200 ? 'published' : `publish ${pub.status}: ${JSON.stringify(pub.json).slice(0, 200)}`;
+  console.log(`✔ ${contentType.padEnd(16)} "${displayName}" — created + ${state}`);
 }
 
 // ---------------------------------------------------------------------------
 // Seed data (royalty-free/factual; real place names used descriptively).
 // ---------------------------------------------------------------------------
-
-const listingPages = [
-  {
-    slug: 'places-to-visit',
-    // Under the site root (sibling of the Home experience → resolves to
-    // /places-to-visit/). Experiences can't parent pages, and root-level pages
-    // route from "/", so this yields the URL we want without nesting under Home.
-    contentType: 'PlacesToVisitPage',
-    container: ROOT,
-    displayName: 'Places to Visit',
-    properties: {
-      heading: S('Where Dubai comes to life'),
-      intro: S('From record-breaking landmarks to quiet heritage lanes — a curated guide to the city’s most memorable places.'),
-      metaDescription: S('Explore the best places to visit in Dubai — landmarks, beaches, dining and hidden gems.'),
-    },
-  },
-];
 
 const areas = [
   { slug: 'downtown-dubai', displayName: 'Downtown Dubai', props: { name: S('Downtown Dubai'), summary: S('The glittering heart of the city — Burj Khalifa, The Dubai Fountain and the Dubai Mall.'), latitude: S(25.1972), longitude: S(55.2744) } },
@@ -158,15 +124,13 @@ const events = [
 ];
 
 async function main() {
-  console.log(`Seeding → ${GATEWAY} (locale ${LOCALE})\n`);
+  console.log(`Seeding → ${GATEWAY} (container ${CONTAINER}, locale ${LOCALE})\n`);
   const token = await getToken();
 
-  for (const p of listingPages) await upsert(token, { slug: p.slug, contentType: p.contentType, container: p.container, routable: true, displayName: p.displayName, properties: p.properties });
-  for (const a of areas) await upsert(token, { slug: a.slug, contentType: 'Area', container: ROOT, routable: true, displayName: a.displayName, properties: a.props });
-  for (const c of categories) await upsert(token, { slug: c.slug, contentType: 'Category', container: ROOT, routable: false, displayName: c.displayName, properties: c.props });
-  // POIs live under Places to Visit → /places-to-visit/<slug>. reparent moves any already-seeded (flat) POIs.
-  for (const p of pois) await upsert(token, { slug: p.slug, contentType: 'PointOfInterest', container: PLACES_KEY, routable: true, displayName: p.displayName, properties: p.props, reparent: true });
-  for (const e of events) await upsert(token, { slug: e.slug, contentType: 'Event', container: ROOT, routable: true, displayName: e.displayName, properties: e.props });
+  for (const a of areas) await upsert(token, { slug: a.slug, contentType: 'Area', routable: true, displayName: a.displayName, properties: a.props });
+  for (const c of categories) await upsert(token, { slug: c.slug, contentType: 'Category', routable: false, displayName: c.displayName, properties: c.props });
+  for (const p of pois) await upsert(token, { slug: p.slug, contentType: 'PointOfInterest', routable: true, displayName: p.displayName, properties: p.props });
+  for (const e of events) await upsert(token, { slug: e.slug, contentType: 'Event', routable: true, displayName: e.displayName, properties: e.props });
 
   console.log('\nDone.');
 }

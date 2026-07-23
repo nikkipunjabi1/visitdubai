@@ -126,6 +126,18 @@ COMPONENT-STANDARDS.md, SEO.md, PREVIEW-WORKFLOW.md, QUALITY.md._
 - **Title template doesn't wrap the root page** (same segment as root layout) → set it explicitly.
 - **Local HTTPS:** `next dev --experimental-https` needs a trusted local CA — run `mkcert -install`
   once (it needs your keychain password) or the cert step fails and falls back to HTTP (breaks preview).
+- **Registry ↔ CMS drift breaks preview.** The React registry must *mirror* the CMS model. A type
+  registered locally but **deleted from Graph** makes the generated delivery/preview query fail
+  (`GraphContentResponseError: HTTP 400: N errors in the GraphQL query` — one per stale type). A type
+  **in Graph but not registered** throws `GraphMissingContentTypeError` when it's resolved. After
+  cleaning a scaffold, **prune its demo types from `initContentTypeRegistry`/`initReactComponentRegistry`**
+  the moment they're gone from the CMS — don't defer it. Keep the SDK system types (`BlankExperience`,
+  `BlankSection`).
+- **Register the image asset type (`ImageMedia`, `baseType: '_image'`).** Uploaded images get this
+  concrete type, and any `contentReference` with `allowedTypes: ['_image']` (e.g. a Hero background)
+  resolves to it — so it *must* be registered or preview throws `GraphMissingContentTypeError`. Give it
+  **empty `properties: {}`**: the SDK auto-selects `_assetMetadata`/`_imageMetadata`, so the query stays
+  valid even if the CMS asset type carries extra fields.
 
 > These gotchas are prime blog material (BLOG-PLAN.md #2/#3) — they're exactly what the community
 > searches for.

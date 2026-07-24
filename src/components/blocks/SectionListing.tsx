@@ -8,7 +8,9 @@ import {
 } from '@/components/ui/SectionShell';
 import { LayoutDisplayTemplate } from './LayoutDisplayTemplate';
 import { SectionCardGrid } from '@/components/content/SectionCard';
+import { Pagination } from '@/components/ui/Pagination';
 import { getSectionChildren } from '@/lib/sections';
+import { getListingState } from '@/lib/listing-context';
 
 /**
  * SectionListing — the reusable "list this section's items" block that authors drop
@@ -40,6 +42,19 @@ export const SectionListingContentType = contentType({
       group: 'content',
       sortOrder: 2,
     },
+    pageSize: {
+      type: 'string',
+      format: 'selectOne',
+      displayName: 'Items per page',
+      description: 'How many items to show per page (server-side pagination).',
+      group: 'content',
+      sortOrder: 3,
+      enum: [
+        { value: '9', displayName: '9' },
+        { value: '12', displayName: '12' },
+        { value: '15', displayName: '15' },
+      ],
+    },
   },
 });
 
@@ -51,7 +66,16 @@ type Props = {
 export default async function SectionListing({ content, displaySettings }: Props) {
   const { pa } = getPreviewUtils(content);
   const sourceKey = content.source?.key;
-  const items = sourceKey ? await getSectionChildren(sourceKey) : [];
+  const pageSize = Number.parseInt(content.pageSize ?? '', 10) || 12;
+
+  // The route seeds the current page into the request-scoped store (searchParams
+  // don't reach this block directly — see src/lib/listing-context.ts).
+  const state = getListingState();
+  const page = Math.max(1, state.page);
+
+  const { items, total } = sourceKey
+    ? await getSectionChildren(sourceKey, { skip: (page - 1) * pageSize, limit: pageSize })
+    : { items: [], total: 0 };
 
   return (
     <SectionShell
@@ -65,6 +89,7 @@ export default async function SectionListing({ content, displaySettings }: Props
         </h2>
       ) : null}
       <SectionCardGrid items={items} />
+      <Pagination state={state} total={total} pageSize={pageSize} />
     </SectionShell>
   );
 }

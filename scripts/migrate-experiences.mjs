@@ -89,7 +89,7 @@ function buildComposition(s) {
       },
       {
         id: randomUUID(), displayName: 'Section Listing', nodeType: 'component', displaySettings: layout,
-        component: { contentType: 'SectionListing', properties: { source: V(`cms://content/${s.newKey}`) } },
+        component: { contentType: 'SectionListing', properties: { source: V(`cms://content/${s.newKey}`), pageSize: V('9') } },
       },
     ],
   };
@@ -112,7 +112,7 @@ async function migrate(t, s) {
   }
 
   // 2. Move all child items from the old page onto the new experience.
-  const kids = await graph(`query($c:String!){ _Page(where:{ _metadata:{ container:{ eq:$c } } }, limit:200){ items{ _metadata{ key displayName } } } }`, { c: s.oldKey });
+  const kids = await graph(`query($c:String!){ _Page(where:{ _metadata:{ container:{ eq:$c } } }, limit:100){ items{ _metadata{ key displayName } } } }`, { c: s.oldKey });
   // SAFETY: a failed/errored child query must NOT be treated as "empty", or step 3
   // would delete a page that still has children and cascade-delete them.
   if (kids.errors) {

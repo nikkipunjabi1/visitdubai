@@ -76,17 +76,29 @@ type AnyChild = Node & { priceBand?: string | null; _metadata?: { url?: { defaul
 
 const priceMeta = (band?: string | null) => (band && band !== 'free' ? band : band === 'free' ? 'Free' : null);
 
+export type SectionChildrenPage = { items: SectionCardItem[]; total: number };
+
 /**
- * Generic children query for the SectionListing block — one engine for ALL section
- * pages (Places to Visit, Neighbourhoods, Events). Uses inline fragments so each
- * child type contributes its own fields (POI price, Event dates) while sharing one
- * card. Ordered by name. Guarded → empty list on error.
+ * Generic, server-PAGINATED children query for the SectionListing block — one engine
+ * for ALL section pages (Places to Visit, Neighbourhoods, Events). Uses inline
+ * fragments so each child type contributes its own fields (POI price, Event dates)
+ * while sharing one card. Ordering is server-side (by displayName) so pages are
+ * stable. Returns the page slice + the grand `total` for the pager. Guarded → empty.
  */
-export async function getSectionChildren(containerKey: string): Promise<SectionCardItem[]> {
+export async function getSectionChildren(
+  containerKey: string,
+  { skip = 0, limit = 12 }: { skip?: number; limit?: number } = {},
+): Promise<SectionChildrenPage> {
   try {
     const data = (await getClient().request(
-      `query($c: String!) {
-        _Page(where: { _metadata: { container: { eq: $c } } }, limit: 100) {
+      `query($c: String!, $skip: Int!, $limit: Int!) {
+        _Page(
+          where: { _metadata: { container: { eq: $c } } }
+          orderBy: { _metadata: { displayName: ASC } }
+          skip: $skip
+          limit: $limit
+        ) {
+          total
           items {
             _metadata { displayName url { default } types }
             ... on PointOfInterest { name summary priceBand }
@@ -95,16 +107,15 @@ export async function getSectionChildren(containerKey: string): Promise<SectionC
           }
         }
       }`,
-      { c: containerKey },
-    )) as { _Page?: { items?: AnyChild[] } };
-    return (data?._Page?.items ?? [])
-      .map((n) => {
-        const isEvent = n._metadata?.types?.includes('Event');
-        const meta = isEvent ? eventMeta(n) : priceMeta(n.priceBand);
-        return toCard({ ...n, name: n.name ?? n._metadata?.displayName ?? 'Untitled' }, meta);
-      })
-      .sort((a, b) => a.name.localeCompare(b.name));
+      { c: containerKey, skip, limit },
+    )) as { _Page?: { total?: number; items?: AnyChild[] } };
+    const items = (data?._Page?.items ?? []).map((n) => {
+      const isEvent = n._metadata?.types?.includes('Event');
+      const meta = isEvent ? eventMeta(n) : priceMeta(n.priceBand);
+      return toCard({ ...n, name: n.name ?? n._metadata?.displayName ?? 'Untitled' }, meta);
+    });
+    return { items, total: data?._Page?.total ?? items.length };
   } catch {
-    return [];
+    return { items: [], total: 0 };
   }
 }

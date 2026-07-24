@@ -12,6 +12,12 @@ import { AreaContentType } from './Area';
 import { EventContentType } from './Event';
 import { TagContentType } from './Tag';
 import { SiteSettingsContentType } from './SiteSettings';
+import { FolderContentType } from './Folder';
+import {
+  PlacesToVisitContentType,
+  NeighbourhoodsContentType,
+  EventsContentType,
+} from './SectionExperience';
 
 /**
  * HomePage — the site's home experience AND its site root (one node, e.g.
@@ -26,13 +32,21 @@ export const HomePageContentType = contentType({
   displayName: 'Home / Site Root',
   baseType: '_experience',
   extends: SeoMetadataContract,
-  // The site root contains the section pages + this site's settings.
+  // The site root contains the section pages + organizational folders
+  // (Taxonomy → Tags, Settings → Site Settings). Tag/SiteSettings stay listed so
+  // existing direct children still validate during/after the move into folders.
   mayContainTypes: [
+    // Visual Builder section experiences (current).
+    PlacesToVisitContentType,
+    NeighbourhoodsContentType,
+    EventsContentType,
+    // Legacy _page listing types — kept until their old instances are removed.
     PlacesToVisitPageContentType,
     NeighbourhoodsPageContentType,
     EventsPageContentType,
     AreaContentType,
     EventContentType,
+    FolderContentType,
     TagContentType,
     SiteSettingsContentType,
   ],

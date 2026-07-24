@@ -5,9 +5,6 @@ import {
   getPreviewUtils,
 } from '@optimizely/cms-sdk/react/server';
 import { SeoMetadataContract } from './SeoMetadata';
-import { PlacesToVisitPageContentType } from './PlacesToVisitPage';
-import { NeighbourhoodsPageContentType } from './NeighbourhoodsPage';
-import { EventsPageContentType } from './EventsPage';
 import { AreaContentType } from './Area';
 import { EventContentType } from './Event';
 import { TagContentType } from './Tag';
@@ -36,14 +33,10 @@ export const HomePageContentType = contentType({
   // (Taxonomy → Tags, Settings → Site Settings). Tag/SiteSettings stay listed so
   // existing direct children still validate during/after the move into folders.
   mayContainTypes: [
-    // Visual Builder section experiences (current).
+    // Visual Builder section experiences.
     PlacesToVisitContentType,
     NeighbourhoodsContentType,
     EventsContentType,
-    // Legacy _page listing types — kept until their old instances are removed.
-    PlacesToVisitPageContentType,
-    NeighbourhoodsPageContentType,
-    EventsPageContentType,
     AreaContentType,
     EventContentType,
     FolderContentType,

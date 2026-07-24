@@ -40,38 +40,6 @@ function eventMeta(node: Node): string | null {
   return end && end !== start ? `${start} – ${end}` : start;
 }
 
-export async function getChildAreas(containerKey: string): Promise<SectionCardItem[]> {
-  try {
-    const data = (await getClient().request(
-      `query($c: String!) {
-        Area(where: { _metadata: { container: { eq: $c } } }, orderBy: { name: ASC }, limit: 100) {
-          items { name summary _metadata { url { default } } }
-        }
-      }`,
-      { c: containerKey },
-    )) as { Area?: { items?: Node[] } };
-    return (data?.Area?.items ?? []).map((n) => toCard(n));
-  } catch {
-    return [];
-  }
-}
-
-export async function getChildEvents(containerKey: string): Promise<SectionCardItem[]> {
-  try {
-    const data = (await getClient().request(
-      `query($c: String!) {
-        Event(where: { _metadata: { container: { eq: $c } } }, orderBy: { startDate: ASC }, limit: 100) {
-          items { name summary startDate endDate _metadata { url { default } } }
-        }
-      }`,
-      { c: containerKey },
-    )) as { Event?: { items?: Node[] } };
-    return (data?.Event?.items ?? []).map((n) => toCard(n, eventMeta(n)));
-  } catch {
-    return [];
-  }
-}
-
 type AnyChild = Node & { priceBand?: string | null; _metadata?: { url?: { default?: string | null } | null; displayName?: string | null; types?: string[] | null } | null };
 
 const priceMeta = (band?: string | null) => (band && band !== 'free' ? band : band === 'free' ? 'Free' : null);

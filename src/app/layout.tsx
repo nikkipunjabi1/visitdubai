@@ -24,9 +24,6 @@ import { LayoutDisplayTemplate } from '@/components/blocks/LayoutDisplayTemplate
 
 // This is Dubai experiences, pages + media.
 import HomePage, { HomePageContentType } from '@/components/content/HomePage';
-import PlacesToVisitPage, { PlacesToVisitPageContentType } from '@/components/content/PlacesToVisitPage';
-import NeighbourhoodsPage, { NeighbourhoodsPageContentType } from '@/components/content/NeighbourhoodsPage';
-import EventsPage, { EventsPageContentType } from '@/components/content/EventsPage';
 import SectionExperience, {
   PlacesToVisitContentType,
   NeighbourhoodsContentType,
@@ -66,9 +63,6 @@ initContentTypeRegistry([
   HeroBannerContentType,
   SectionListingContentType,
   HomePageContentType,
-  PlacesToVisitPageContentType,
-  NeighbourhoodsPageContentType,
-  EventsPageContentType,
   PlacesToVisitContentType,
   NeighbourhoodsContentType,
   EventsContentType,
@@ -90,9 +84,6 @@ initReactComponentRegistry({
     HeroBanner: Hero,
     SectionListing,
     HomePage,
-    PlacesToVisitPage,
-    NeighbourhoodsPage,
-    EventsPage,
     PlacesToVisit: SectionExperience,
     Neighbourhoods: SectionExperience,
     Events: SectionExperience,

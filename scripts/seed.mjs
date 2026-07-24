@@ -21,10 +21,6 @@ import { createHash } from 'node:crypto';
 const GATEWAY = (process.env.OPTIMIZELY_CMS_API_URL || 'https://api.cms.optimizely.com').replace(/\/$/, '');
 const CLIENT_ID = process.env.OPTIMIZELY_CMS_CLIENT_ID;
 const CLIENT_SECRET = process.env.OPTIMIZELY_CMS_CLIENT_SECRET;
-// Site root (container of the existing Home experience). Root-level pages route
-// from "/", so a page here gets /{routeSegment}/.
-const ROOT = process.env.SEED_CONTAINER || '43f936c99b234ea397b261c538ad07c9';
-const HOME = process.env.SEED_HOME || '71792f1b444e4d6d9a77c41c47c4cf7e';
 const LOCALE = process.env.SEED_LOCALE || 'en';
 
 if (!CLIENT_ID || !CLIENT_SECRET) {
@@ -43,23 +39,18 @@ const eventKey = (slug) => keyFor(`event:${slug}`);
 // Content references are written as "cms://content/<key>" strings. REF targets Areas
 // (the only cross-references authored in the seed, from a POI to its Area).
 const REF = (slug) => ({ value: `cms://content/${areaKey(slug)}` });
-// Tags use a namespaced key ("tag:<slug>") so they don't collide with the deleted
-// (trashed) legacy Category items, whose keys were md5(<slug>).
-const tagKey = (slug) => keyFor(`tag:${slug}`);
+// Tags are shared blocks (_component) keyed "tagblock:<slug>" — a fresh namespace
+// (the retired `_page` Tag instances used "tag:<slug>", now trashed).
+const tagKey = (slug) => keyFor(`tagblock:${slug}`);
 const TAGREFS = (slugs) => ({ value: slugs.map((s) => `cms://content/${tagKey(s)}`) });
+// Application shared-assets folder ("For This Application") — home for shared blocks.
+const SITE_ASSETS = process.env.SEED_SITE_ASSETS || '8ce609ddb1984b04a99c5764a540d313';
 // Section pages are now Visual Builder EXPERIENCES (created by
 // scripts/migrate-experiences.mjs). Their child items (POIs, Areas, Events) are
 // parented to these experience keys → URLs stay /<section>/<slug>.
 const PLACES_KEY = keyFor('places-to-visit-exp');
 const NEIGHBOURHOODS_KEY = keyFor('neighbourhoods-exp');
 const EVENTS_KEY = keyFor('events-exp');
-// Organizational folders (non-routable, not in Graph) that tidy the author tree:
-// Taxonomy → all Tags; Settings → the Site Settings singleton. Child content still
-// carries Home in its `_metadata.path`, so scoped queries survive the nesting.
-const TAXONOMY_KEY = keyFor('folder:taxonomy');
-const SETTINGS_KEY = keyFor('folder:settings');
-// The Site Settings singleton was created in the CMS UI with this fixed key.
-const SITE_SETTINGS_KEY = process.env.SEED_SITE_SETTINGS || '2463bf3e5417cd07746ed1a38086acb5';
 
 async function getToken() {
   const res = await fetch(`${GATEWAY}/oauth/token`, {
@@ -103,37 +94,6 @@ async function publishLatest(token, key, label) {
   return pub.status === 204 || pub.status === 200
     ? 'published'
     : `publish ${pub.status}: ${JSON.stringify(pub.json).slice(0, 160)}`;
-}
-
-// Folders are a `_folder` base type: NON-localized (no `locale`) and non-routable
-// (no `routeSegment`). Create-or-skip; already-present is fine (idempotent).
-async function createFolder(token, key, displayName, container) {
-  const create = await api(token, 'POST', '/content', {
-    key,
-    contentType: 'Folder',
-    container,
-    initialVersion: { displayName },
-  });
-  if (create.status === 201) {
-    console.log(`✔ Folder             "${displayName}" — created`);
-  } else if (create.status === 409) {
-    console.log(`= Folder             "${displayName}" — already exists`);
-  } else {
-    console.log(`✖ Folder             "${displayName}" — create ${create.status}: ${JSON.stringify(create.json).slice(0, 300)}`);
-  }
-}
-
-// Move an EXISTING item to a new container WITHOUT rewriting its authored
-// properties (used for the Site Settings singleton, whose values are UI-authored).
-// PATCH the container, then re-publish the current version so the move goes live.
-async function reparentOnly(token, key, container, label) {
-  const patch = await api(token, 'PATCH', `/content/${key}`, { container }, { 'Content-Type': 'application/merge-patch+json' });
-  if (patch.status !== 200 && patch.status !== 204) {
-    console.log(`✖ reparent ${label} — PATCH ${patch.status}: ${JSON.stringify(patch.json).slice(0, 240)}`);
-    return;
-  }
-  const state = await publishLatest(token, key);
-  console.log(`↻ reparent           "${label}" — moved + ${state}`);
 }
 
 async function upsert(token, { slug, key: providedKey, contentType, container, routable, displayName, properties, reparent }) {
@@ -212,18 +172,12 @@ async function main() {
   console.log(`Seeding → ${GATEWAY} (locale ${LOCALE})\n`);
   const token = await getToken();
 
-  // Organizational folders first (Tags + Site Settings get filed inside them).
-  await createFolder(token, TAXONOMY_KEY, 'Taxonomy', HOME);
-  await createFolder(token, SETTINGS_KEY, 'Settings', HOME);
-
-  // Section pages themselves are Visual Builder experiences created by
-  // scripts/migrate-experiences.mjs (with a seeded canvas). This seed only fills
-  // their child items below.
+  // Section pages are Visual Builder experiences (scripts/migrate-experiences.mjs).
+  // Tags + Site Settings are shared blocks in the app assets folder. This seed fills
+  // the section child items + the tag blocks that power the facets.
   for (const a of areas) await upsert(token, { slug: a.slug, key: areaKey(a.slug), contentType: 'Area', container: NEIGHBOURHOODS_KEY, routable: true, displayName: a.displayName, properties: a.props, reparent: true });
-  // Tags live in the Taxonomy folder; reparent moves any that were seeded flat under Home.
-  for (const t of tags) await upsert(token, { slug: t.slug, key: tagKey(t.slug), contentType: 'Tag', container: TAXONOMY_KEY, routable: true, displayName: t.displayName, properties: t.props, reparent: true });
-  // Site Settings singleton → Settings folder (move only; keep its UI-authored values).
-  await reparentOnly(token, SITE_SETTINGS_KEY, SETTINGS_KEY, 'Site Settings');
+  // Tags → shared blocks (_component) in the app assets folder (non-routable).
+  for (const t of tags) await upsert(token, { slug: t.slug, key: tagKey(t.slug), contentType: 'TagTerm', container: SITE_ASSETS, routable: false, displayName: t.displayName, properties: t.props, reparent: true });
   // POIs live under Places to Visit → /places-to-visit/<slug>.
   for (const p of pois) await upsert(token, { slug: p.slug, key: poiKey(p.slug), contentType: 'PointOfInterest', container: PLACES_KEY, routable: true, displayName: p.displayName, properties: p.props, reparent: true });
   for (const e of events) await upsert(token, { slug: e.slug, key: eventKey(e.slug), contentType: 'Event', container: EVENTS_KEY, routable: true, displayName: e.displayName, properties: e.props, reparent: true });

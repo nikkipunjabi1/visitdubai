@@ -39,6 +39,7 @@ Blog when we hit any of:
 | 10 | Using Optimizely Opal for Arabic translation | New/learning | 4 |
 | 11 | I open-sourced a stakeholder-preview module for Optimizely SaaS — here's how | Module | 5 |
 | 12 | **How to connect Optimizely CMP (Content Marketing Platform) with Optimizely SaaS CMS** — publishing/asset flow between CMP and CMS SaaS _(outline only for now; detailed write-up later)_ | New/learning | TBD |
+| 14 | **A Reusable, Server-Rendered Listing Engine on Optimizely SaaS + Visual Builder** — section pages as experiences, the grid as a `SectionListing` block, request-scoped state via React `cache()`, server-side pagination/sort/faceted filters, and 3 hard-won gotchas (cascade-delete on parent delete, `limit`≤100, `indexingType`/reference-`key` filtering). _(draft: blog/14-listing-engine-visual-builder.md)_ | 🎯 Phase + 🧩 Challenge | 3 |
 | 13 | **The Page That Shouldn't Have a URL: Best-Practice Site Settings in Optimizely SaaS CMS** — where global settings belong in the content tree, how to keep them off the public web (non-routable / router-excluded), the placement + security guardrails, and the multisite-safe GraphQL query (scope by Start Page key). Includes the options considered + the test queries proving no public URL. | 🧩 Challenge / New | 2 |
 
 ## Post skeleton (reuse for each)

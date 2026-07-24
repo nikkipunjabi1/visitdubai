@@ -24,13 +24,17 @@ Root
    │   └─ Point of Interest…                                        → /places-to-visit/<slug>
    ├─ Events                Events         (Experience/VB canvas)  → /events
    │   └─ Event…                                                    → /events/<slug>
-   ├─ Neighbourhoods        Neighbourhoods (Experience/VB canvas)  → /neighbourhoods
-   │   └─ Area… (Downtown, Marina, Old Dubai)                       → /neighbourhoods/<slug>
-   ├─ Taxonomy              Folder (not in site nav)
-   │   └─ Tag… (Landmarks, Beaches, Festivals, Luxury…)             referenced for facets + AI
-   └─ Settings              Folder (not in site nav)
-       └─ Site Settings      SiteSettings (singleton)               this site's brand / SEO / crawl
+   └─ Neighbourhoods        Neighbourhoods (Experience/VB canvas)  → /neighbourhoods
+       └─ Area… (Downtown, Marina, Old Dubai)                       → /neighbourhoods/<slug>
+
+Shared blocks — "For This Application" (app assets folder, /SysSiteAssets/), NOT in the page tree:
+   ├─ Site Settings         SiteConfiguration (_component singleton)  this site's brand / SEO / crawl
+   └─ Tag… (Landmarks, Beaches, Festivals, Luxury…)  TagTerm (_component)  referenced for facets + AI
 ```
+Global config + taxonomy are **shared blocks** (`_component`) in the application's shared-assets
+folder, so editors manage them from the Shared Blocks panel — no page tree, no non-routable pages,
+no per-type access grants. References to tags still filter by `key` (facets), and the settings
+singleton is fetched scoped to the Start Page subtree via `_metadata.path`.
 - **Home IS the site root** (one node, e.g. "This is Dubai"): it's the Start Page the Application
   binds its host(s) to (`localhost:3000` dev, the Vercel domain in prod) AND it parents the section
   pages. URLs resolve relative to it → Home = `/`, children = `/<segment>`. No separate SiteRoot node,

@@ -77,10 +77,10 @@ export type TagOption = { name: string; slug: string; key: string };
 export const getTags = cache(async (): Promise<TagOption[]> => {
   try {
     const data = (await getClient().request(
-      `query { Tag(orderBy: { name: ASC }, limit: 100) { items { name slug _metadata { key } } } }`,
+      `query { TagTerm(orderBy: { name: ASC }, limit: 100) { items { name slug _metadata { key } } } }`,
       {},
-    )) as { Tag?: { items?: Array<{ name?: string; slug?: string; _metadata?: { key?: string } }> } };
-    return (data?.Tag?.items ?? [])
+    )) as { TagTerm?: { items?: Array<{ name?: string; slug?: string; _metadata?: { key?: string } }> } };
+    return (data?.TagTerm?.items ?? [])
       .filter((t) => t.slug && t._metadata?.key)
       .map((t) => ({ name: t.name ?? t.slug!, slug: t.slug!, key: t._metadata!.key! }));
   } catch {

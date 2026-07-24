@@ -28,10 +28,10 @@ async function indexingAllowed(): Promise<boolean> {
   try {
     const client = getClient();
     const data = (await client.request(
-      `query { SiteSettings(limit: 1) { items { allowSearchIndexing } } }`,
+      `query { SiteConfiguration(limit: 1) { items { allowSearchIndexing } } }`,
       {},
-    )) as { SiteSettings?: { items?: Array<{ allowSearchIndexing?: boolean }> } };
-    return Boolean(data?.SiteSettings?.items?.[0]?.allowSearchIndexing);
+    )) as { SiteConfiguration?: { items?: Array<{ allowSearchIndexing?: boolean }> } };
+    return Boolean(data?.SiteConfiguration?.items?.[0]?.allowSearchIndexing);
   } catch {
     return false; // fail closed — never accidentally allow crawling
   }

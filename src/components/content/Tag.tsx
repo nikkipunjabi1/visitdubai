@@ -9,14 +9,20 @@ import { contentType } from '@optimizely/cms-sdk';
  * `dimension` lets one type drive several independent facets (themes, cuisines,
  * audiences…). `synonyms` + `description` also feed Phase-4 AI/semantic search.
  *
- * Tags are NON-ROUTABLE on the site (excluded in the [...slug] router, see
- * docs/CONTENT-ARCHITECTURE.md §4) — pure taxonomy data, no public URL. They can
- * be promoted to real (noindex) landing pages later without a model change.
+ * Tags are modelled as **shared blocks** (`_component`) in the app's shared-assets
+ * folder ("For This Application"), so editors add/edit taxonomy from the Shared
+ * Blocks panel — no page tree, no per-type access grants. References to them still
+ * filter by key (`tags: { key: { eq } }`), which is what powers the listing facets.
+ *
+ * New key `TagTerm`: base types are immutable, so the block can't reuse the retired
+ * `_page` `Tag` key. `compositionBehaviors` is required for a block to be exposed as
+ * a Graph root type (for the facet list) + creatable as a shared block.
  */
 export const TagContentType = contentType({
-  key: 'Tag',
+  key: 'TagTerm',
   displayName: 'Tag (Taxonomy term)',
-  baseType: '_page',
+  baseType: '_component',
+  compositionBehaviors: ['elementEnabled'],
   properties: {
     name: {
       type: 'string',

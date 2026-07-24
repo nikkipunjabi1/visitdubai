@@ -71,3 +71,40 @@ export async function getChildEvents(containerKey: string): Promise<SectionCardI
     return [];
   }
 }
+
+type AnyChild = Node & { priceBand?: string | null; _metadata?: { url?: { default?: string | null } | null; displayName?: string | null; types?: string[] | null } | null };
+
+const priceMeta = (band?: string | null) => (band && band !== 'free' ? band : band === 'free' ? 'Free' : null);
+
+/**
+ * Generic children query for the SectionListing block — one engine for ALL section
+ * pages (Places to Visit, Neighbourhoods, Events). Uses inline fragments so each
+ * child type contributes its own fields (POI price, Event dates) while sharing one
+ * card. Ordered by name. Guarded → empty list on error.
+ */
+export async function getSectionChildren(containerKey: string): Promise<SectionCardItem[]> {
+  try {
+    const data = (await getClient().request(
+      `query($c: String!) {
+        _Page(where: { _metadata: { container: { eq: $c } } }, limit: 100) {
+          items {
+            _metadata { displayName url { default } types }
+            ... on PointOfInterest { name summary priceBand }
+            ... on Area { name summary }
+            ... on Event { name summary startDate endDate }
+          }
+        }
+      }`,
+      { c: containerKey },
+    )) as { _Page?: { items?: AnyChild[] } };
+    return (data?._Page?.items ?? [])
+      .map((n) => {
+        const isEvent = n._metadata?.types?.includes('Event');
+        const meta = isEvent ? eventMeta(n) : priceMeta(n.priceBand);
+        return toCard({ ...n, name: n.name ?? n._metadata?.displayName ?? 'Untitled' }, meta);
+      })
+      .sort((a, b) => a.name.localeCompare(b.name));
+  } catch {
+    return [];
+  }
+}

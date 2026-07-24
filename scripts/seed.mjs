@@ -34,16 +34,25 @@ if (!CLIENT_ID || !CLIENT_SECRET) {
 
 const keyFor = (slug) => createHash('md5').update(slug).digest('hex');
 const S = (value) => ({ value }); // scalar / array / url property (url written as a plain string)
-// Content references are written as "cms://content/<key>" strings.
-const REF = (slug) => ({ value: `cms://content/${keyFor(slug)}` });
-const REFS = (slugs) => ({ value: slugs.map((s) => `cms://content/${keyFor(s)}`) });
+// Namespaced keys for the child items. The original md5(<slug>) keys are now
+// TRASHED (an earlier migration cascade-deleted them) and a trashed key cannot be
+// re-created, so the recreated items use "<type>:<slug>" keys — same trick as tags.
+const areaKey = (slug) => keyFor(`area:${slug}`);
+const poiKey = (slug) => keyFor(`poi:${slug}`);
+const eventKey = (slug) => keyFor(`event:${slug}`);
+// Content references are written as "cms://content/<key>" strings. REF targets Areas
+// (the only cross-references authored in the seed, from a POI to its Area).
+const REF = (slug) => ({ value: `cms://content/${areaKey(slug)}` });
 // Tags use a namespaced key ("tag:<slug>") so they don't collide with the deleted
 // (trashed) legacy Category items, whose keys were md5(<slug>).
 const tagKey = (slug) => keyFor(`tag:${slug}`);
 const TAGREFS = (slugs) => ({ value: slugs.map((s) => `cms://content/${tagKey(s)}`) });
-const PLACES_KEY = keyFor('places-to-visit');
-const NEIGHBOURHOODS_KEY = keyFor('neighbourhoods');
-const EVENTS_KEY = keyFor('events');
+// Section pages are now Visual Builder EXPERIENCES (created by
+// scripts/migrate-experiences.mjs). Their child items (POIs, Areas, Events) are
+// parented to these experience keys → URLs stay /<section>/<slug>.
+const PLACES_KEY = keyFor('places-to-visit-exp');
+const NEIGHBOURHOODS_KEY = keyFor('neighbourhoods-exp');
+const EVENTS_KEY = keyFor('events-exp');
 // Organizational folders (non-routable, not in Graph) that tidy the author tree:
 // Taxonomy → all Tags; Settings → the Site Settings singleton. Child content still
 // carries Home in its `_metadata.path`, so scoped queries survive the nesting.
@@ -159,43 +168,10 @@ async function upsert(token, { slug, key: providedKey, contentType, container, r
 // Seed data (royalty-free/factual; real place names used descriptively).
 // ---------------------------------------------------------------------------
 
-// Section pages live UNDER Home (the site root) → /<segment>. Home.mayContainTypes
-// allows them. Their children (POIs, Areas, Events) nest under them.
-const listingPages = [
-  {
-    slug: 'places-to-visit',
-    contentType: 'PlacesToVisitPage',
-    container: HOME,
-    displayName: 'Places to Visit',
-    properties: {
-      heading: S('Where Dubai comes to life'),
-      intro: S('From record-breaking landmarks to quiet heritage lanes — a curated guide to the city’s most memorable places.'),
-      metaDescription: S('Explore the best places to visit in Dubai — landmarks, beaches, dining and hidden gems.'),
-    },
-  },
-  {
-    slug: 'neighbourhoods',
-    contentType: 'NeighbourhoodsPage',
-    container: HOME,
-    displayName: 'Neighbourhoods',
-    properties: {
-      heading: S('Every district has a story'),
-      intro: S('From Downtown’s skyline to Old Dubai’s souks — explore the city one neighbourhood at a time.'),
-      metaDescription: S('Explore Dubai’s neighbourhoods — Downtown, Marina, Old Dubai and beyond.'),
-    },
-  },
-  {
-    slug: 'events',
-    contentType: 'EventsPage',
-    container: HOME,
-    displayName: 'Events',
-    properties: {
-      heading: S('What’s on in Dubai'),
-      intro: S('Festivals, races and seasonal celebrations across the city — plan your visit around the moments that matter.'),
-      metaDescription: S('What’s on in Dubai — festivals, events and seasonal highlights.'),
-    },
-  },
-];
+// Section pages are Visual Builder EXPERIENCES created by
+// scripts/migrate-experiences.mjs (with a seeded canvas: Section Heading + Section
+// Listing). This seed only fills their child items below; the items nest under each
+// experience → /<section>/<slug>.
 
 const areas = [
   { slug: 'downtown-dubai', displayName: 'Downtown Dubai', props: { name: S('Downtown Dubai'), summary: S('The glittering heart of the city — Burj Khalifa, The Dubai Fountain and the Dubai Mall.'), latitude: S(25.1972), longitude: S(55.2744) } },
@@ -240,15 +216,17 @@ async function main() {
   await createFolder(token, TAXONOMY_KEY, 'Taxonomy', HOME);
   await createFolder(token, SETTINGS_KEY, 'Settings', HOME);
 
-  for (const p of listingPages) await upsert(token, { slug: p.slug, contentType: p.contentType, container: p.container, routable: true, displayName: p.displayName, properties: p.properties, reparent: true });
-  for (const a of areas) await upsert(token, { slug: a.slug, contentType: 'Area', container: NEIGHBOURHOODS_KEY, routable: true, displayName: a.displayName, properties: a.props, reparent: true });
+  // Section pages themselves are Visual Builder experiences created by
+  // scripts/migrate-experiences.mjs (with a seeded canvas). This seed only fills
+  // their child items below.
+  for (const a of areas) await upsert(token, { slug: a.slug, key: areaKey(a.slug), contentType: 'Area', container: NEIGHBOURHOODS_KEY, routable: true, displayName: a.displayName, properties: a.props, reparent: true });
   // Tags live in the Taxonomy folder; reparent moves any that were seeded flat under Home.
   for (const t of tags) await upsert(token, { slug: t.slug, key: tagKey(t.slug), contentType: 'Tag', container: TAXONOMY_KEY, routable: true, displayName: t.displayName, properties: t.props, reparent: true });
   // Site Settings singleton → Settings folder (move only; keep its UI-authored values).
   await reparentOnly(token, SITE_SETTINGS_KEY, SETTINGS_KEY, 'Site Settings');
-  // POIs live under Places to Visit → /places-to-visit/<slug>. reparent moves any already-seeded (flat) POIs.
-  for (const p of pois) await upsert(token, { slug: p.slug, contentType: 'PointOfInterest', container: PLACES_KEY, routable: true, displayName: p.displayName, properties: p.props, reparent: true });
-  for (const e of events) await upsert(token, { slug: e.slug, contentType: 'Event', container: EVENTS_KEY, routable: true, displayName: e.displayName, properties: e.props, reparent: true });
+  // POIs live under Places to Visit → /places-to-visit/<slug>.
+  for (const p of pois) await upsert(token, { slug: p.slug, key: poiKey(p.slug), contentType: 'PointOfInterest', container: PLACES_KEY, routable: true, displayName: p.displayName, properties: p.props, reparent: true });
+  for (const e of events) await upsert(token, { slug: e.slug, key: eventKey(e.slug), contentType: 'Event', container: EVENTS_KEY, routable: true, displayName: e.displayName, properties: e.props, reparent: true });
 
   console.log('\nDone.');
 }

@@ -20,11 +20,11 @@ adding *This is Abu Dhabi* later is just another sibling subtree, no rework (see
 ```
 Root
 └─ This is Dubai            HomePage Experience  ← Home = Site Root = Start Page  → /
-   ├─ Places to Visit       PlacesToVisitPage                      → /places-to-visit
+   ├─ Places to Visit       PlacesToVisit  (Experience/VB canvas)  → /places-to-visit
    │   └─ Point of Interest…                                        → /places-to-visit/<slug>
-   ├─ Events                EventsPage                             → /events
+   ├─ Events                Events         (Experience/VB canvas)  → /events
    │   └─ Event…                                                    → /events/<slug>
-   ├─ Neighbourhoods        NeighbourhoodsPage                     → /neighbourhoods
+   ├─ Neighbourhoods        Neighbourhoods (Experience/VB canvas)  → /neighbourhoods
    │   └─ Area… (Downtown, Marina, Old Dubai)                       → /neighbourhoods/<slug>
    ├─ Taxonomy              Folder (not in site nav)
    │   └─ Tag… (Landmarks, Beaches, Festivals, Luxury…)             referenced for facets + AI

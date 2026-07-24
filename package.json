@@ -14,7 +14,8 @@
     "format:check": "prettier --check .",
     "opti-login": "optimizely-cms-cli login",
     "opti-push": "optimizely-cms-cli config push optimizely.config.mjs",
-    "seed": "node --env-file=.env scripts/seed.mjs"
+    "seed": "node --env-file=.env scripts/seed.mjs",
+    "migrate:experiences": "node --env-file=.env scripts/migrate-experiences.mjs"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",

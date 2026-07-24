@@ -74,10 +74,20 @@ section = new `_page` type + a card + a config entry.
   `aria-current`. RSC streaming (Suspense) renders the shell while the grid resolves. Cards use
   `next/image` once imagery lands.
 
+## Update — section pages are Visual Builder experiences
+Section pages are **`_experience` types** (`PlacesToVisit` / `Neighbourhoods` / `Events`), not fixed
+`_page` types. Each is a VB canvas the author composes freely; the grid is the **`SectionListing`**
+block (`src/components/blocks/SectionListing.tsx`) they drop in, with a `source` reference to the
+section page whose children to list. "Above/below the list" = blocks before/after `SectionListing` on
+the canvas — so composition zones are the canvas itself (no separate `topContent`/`bottomContent`).
+One shared renderer (`SectionExperience.tsx`) + one generic children query (`getSectionChildren`) drive
+all three. Migration: `scripts/migrate-experiences.mjs` (one-time); `scripts/seed.mjs` fills the items.
+
 ## 10. Build phases
-1. **Breadcrumbs** primitive (+ JSON-LD) on listing & detail.
-2. **Composition zones** — add `topContent`/`bottomContent` + `pageSize` to `PlacesToVisitPage`; render Hero/RichText above & below.
-3. **Server pagination** — `?page`, skip/limit, numbered controls.
+1. ✅ **Breadcrumbs** primitive (+ JSON-LD) on listing & detail.
+2. ✅ **Composition zones** — section pages became VB experiences; the `SectionListing` block renders the
+   grid and authors compose Hero/RichText/heading around it on the canvas.
+3. **Server pagination** — `?page`, skip/limit, numbered controls (on the `SectionListing` block).
 4. **Sort + priceBand filter** — works today (scalar).
 5. **Category/Area facets** — after seed v2 relationships.
 6. Extract the shared `<Listing>` engine; document the descriptor; apply to Events/Areas next.

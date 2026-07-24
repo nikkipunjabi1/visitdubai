@@ -24,15 +24,17 @@ import { LayoutDisplayTemplate } from '@/components/blocks/LayoutDisplayTemplate
 // This is Dubai experiences, pages + media.
 import HomePage, { HomePageContentType } from '@/components/content/HomePage';
 import PlacesToVisitPage, { PlacesToVisitPageContentType } from '@/components/content/PlacesToVisitPage';
+import NeighbourhoodsPage, { NeighbourhoodsPageContentType } from '@/components/content/NeighbourhoodsPage';
+import EventsPage, { EventsPageContentType } from '@/components/content/EventsPage';
 import PointOfInterest, { PointOfInterestContentType } from '@/components/content/PointOfInterest';
 import ImageMedia, { ImageMediaContentType } from '@/components/media/ImageMedia';
 
 // Referenced by PointOfInterest (area/categories). Registered for query generation
 // only — they're data on the POI, not rendered as their own components yet.
-import { AreaContentType } from '@/components/content/Area';
+import Area, { AreaContentType } from '@/components/content/Area';
 import { CategoryContentType } from '@/components/content/Category';
 import { TagContentType } from '@/components/content/Tag';
-import { EventContentType } from '@/components/content/Event';
+import EventDetail, { EventContentType } from '@/components/content/Event';
 
 import type { Metadata } from 'next';
 import { getSiteSettings, buildTitleTemplate, buildTitleDefault } from '@/lib/seo';
@@ -57,6 +59,8 @@ initContentTypeRegistry([
   HeroBannerContentType,
   HomePageContentType,
   PlacesToVisitPageContentType,
+  NeighbourhoodsPageContentType,
+  EventsPageContentType,
   PointOfInterestContentType,
   AreaContentType,
   EventContentType,
@@ -74,7 +78,11 @@ initReactComponentRegistry({
     HeroBanner: Hero,
     HomePage,
     PlacesToVisitPage,
+    NeighbourhoodsPage,
+    EventsPage,
     PointOfInterest,
+    Area,
+    Event: EventDetail,
     ImageMedia,
   },
 });

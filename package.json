@@ -21,14 +21,14 @@
     "@opentelemetry/sdk-metrics": "^2.10.0",
     "@opentelemetry/sdk-node": "^0.221.0",
     "@opentelemetry/sdk-trace-node": "^2.7.1",
-    "@optimizely/cms-sdk": "^2.1.0",
+    "@optimizely/cms-sdk": "^2.2.0",
     "next": "^16.2.11",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@optimizely/cms-cli": "^2.1.0",
+    "@optimizely/cms-cli": "^2.2.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.1.1",
     "@types/react": "^19",

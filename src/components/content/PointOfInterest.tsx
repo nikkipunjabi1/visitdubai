@@ -82,6 +82,8 @@ export const PointOfInterestContentType = contentType({
       displayName: 'Price band',
       group: 'content',
       sortOrder: 9,
+      // Queryable so the listing can facet-filter on it (where: { priceBand: { eq } }).
+      indexingType: 'queryable',
       enum: [
         { value: 'free', displayName: 'Free' },
         { value: '$', displayName: '$' },

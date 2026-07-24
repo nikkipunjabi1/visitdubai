@@ -8,7 +8,10 @@ import {
 } from '@/components/ui/SectionShell';
 import { LayoutDisplayTemplate } from './LayoutDisplayTemplate';
 import { SectionCardGrid } from '@/components/content/SectionCard';
-import { getSectionChildren } from '@/lib/sections';
+import { Pagination } from '@/components/ui/Pagination';
+import { ListingControls } from '@/components/ui/ListingControls';
+import { getSectionChildren, getTags, isSortKey, type SortKey, type Filters } from '@/lib/sections';
+import { getListingState } from '@/lib/listing-context';
 
 /**
  * SectionListing — the reusable "list this section's items" block that authors drop
@@ -40,6 +43,19 @@ export const SectionListingContentType = contentType({
       group: 'content',
       sortOrder: 2,
     },
+    pageSize: {
+      type: 'string',
+      format: 'selectOne',
+      displayName: 'Items per page',
+      description: 'How many items to show per page (server-side pagination).',
+      group: 'content',
+      sortOrder: 3,
+      enum: [
+        { value: '9', displayName: '9' },
+        { value: '12', displayName: '12' },
+        { value: '15', displayName: '15' },
+      ],
+    },
   },
 });
 
@@ -51,7 +67,20 @@ type Props = {
 export default async function SectionListing({ content, displaySettings }: Props) {
   const { pa } = getPreviewUtils(content);
   const sourceKey = content.source?.key;
-  const items = sourceKey ? await getSectionChildren(sourceKey) : [];
+  const pageSize = Number.parseInt(content.pageSize ?? '', 10) || 12;
+
+  // The route seeds page + query (sort/filters) into the request-scoped store
+  // (searchParams don't reach this block directly — see src/lib/listing-context.ts).
+  const state = getListingState();
+  const page = Math.max(1, state.page);
+  const sort: SortKey = isSortKey(state.query.sort) ? state.query.sort : 'name';
+  const filters: Filters = { tag: state.query.tag, price: state.query.price };
+
+  const { items, total, childType } = sourceKey
+    ? await getSectionChildren(sourceKey, { skip: (page - 1) * pageSize, limit: pageSize, sort, filters })
+    : { items: [], total: 0, childType: null };
+  // Tag options only needed when the section supports a tag facet.
+  const tags = childType === 'PointOfInterest' || childType === 'Event' ? await getTags() : [];
 
   return (
     <SectionShell
@@ -64,7 +93,16 @@ export default async function SectionListing({ content, displaySettings }: Props
           {content.heading}
         </h2>
       ) : null}
+      <ListingControls
+        state={state}
+        total={total}
+        activeSort={sort}
+        childType={childType}
+        tags={tags}
+        filters={filters}
+      />
       <SectionCardGrid items={items} />
+      <Pagination state={state} total={total} pageSize={pageSize} />
     </SectionShell>
   );
 }

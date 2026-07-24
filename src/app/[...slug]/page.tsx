@@ -8,6 +8,7 @@ import React from 'react';
 import { getSiteSettings, buildContentMetadata, type PageSeo } from '@/lib/seo';
 import { getBreadcrumbs } from '@/lib/breadcrumbs';
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
+import { seedListingState } from '@/lib/listing-context';
 
 // Fetch a path's content once per request; generateMetadata + the page share it.
 const getByPath = cache((path: string) => getClient().getContentByPath(path));
@@ -97,6 +98,7 @@ type Props = {
   params: Promise<{
     slug: string[];
   }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -113,8 +115,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildContentMetadata(node, settings, fallback);
 }
 
-export default async function Page({ params }: Props) {
+export default async function Page({ params, searchParams }: Props) {
   const { slug } = await params;
+  const sp = await searchParams;
+
+  // Seed request-scoped listing state so the SectionListing block (rendered deep in
+  // the VB composition, where searchParams don't reach) can paginate. `page` drives
+  // the server query; other params are preserved on pagination links.
+  const page = Math.max(1, Number.parseInt(String(sp.page ?? '1'), 10) || 1);
+  const query: Record<string, string> = {};
+  for (const [k, v] of Object.entries(sp)) {
+    if (k !== 'page' && typeof v === 'string') query[k] = v;
+  }
+  seedListingState({ page, path: `/${slug.join('/')}`, query });
+
   const content = await getByPath(`/${slug.join('/')}/`);
 
   const node = content[0] as { _metadata?: { types?: string[] } } | undefined;

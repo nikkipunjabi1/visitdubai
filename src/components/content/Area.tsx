@@ -1,6 +1,5 @@
 import { contentType, type ContentProps } from '@optimizely/cms-sdk';
 import { getPreviewUtils } from '@optimizely/cms-sdk/react/server';
-import Link from 'next/link';
 import { SectionShell } from '@/components/ui/SectionShell';
 import { JsonLd } from '@/components/ui/JsonLd';
 import { SeoMetadataContract } from './SeoMetadata';
@@ -82,10 +81,7 @@ export default function Area({ content }: { content: ContentProps<typeof AreaCon
     <SectionShell theme="dark" spacing="spacious">
       <JsonLd data={jsonLd} />
       <article className="mx-auto max-w-page px-6 md:px-10 lg:px-16">
-        <Link href="/neighbourhoods" className="text-sm text-accent hover:underline">
-          ← Neighbourhoods
-        </Link>
-        <header className="mt-6 max-w-3xl">
+        <header className="max-w-3xl">
           <h1 className="text-[clamp(2.5rem,6vw,4.5rem)]" {...pa('name')}>
             {content.name}
           </h1>

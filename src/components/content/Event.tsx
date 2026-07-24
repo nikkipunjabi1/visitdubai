@@ -1,6 +1,5 @@
 import { contentType, type ContentProps } from '@optimizely/cms-sdk';
 import { getPreviewUtils } from '@optimizely/cms-sdk/react/server';
-import Link from 'next/link';
 import { SectionShell } from '@/components/ui/SectionShell';
 import { JsonLd } from '@/components/ui/JsonLd';
 import { SeoMetadataContract } from './SeoMetadata';
@@ -48,10 +47,7 @@ export default function Event({ content }: { content: ContentProps<typeof EventC
     <SectionShell theme="dark" spacing="spacious">
       <JsonLd data={jsonLd} />
       <article className="mx-auto max-w-page px-6 md:px-10 lg:px-16">
-        <Link href="/events" className="text-sm text-accent hover:underline">
-          ← Events
-        </Link>
-        <header className="mt-6 max-w-3xl">
+        <header className="max-w-3xl">
           {dates ? <p className="eyebrow">{dates}</p> : null}
           <h1 className="mt-4 text-[clamp(2.5rem,6vw,4.5rem)]" {...pa('name')}>
             {content.name}

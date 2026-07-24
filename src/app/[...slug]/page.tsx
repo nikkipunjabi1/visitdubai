@@ -6,6 +6,8 @@ import { OptimizelyComponent } from '@optimizely/cms-sdk/react/server';
 import { notFound } from 'next/navigation';
 import React from 'react';
 import { getSiteSettings, buildContentMetadata, type PageSeo } from '@/lib/seo';
+import { getBreadcrumbs } from '@/lib/breadcrumbs';
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
 
 // Fetch a path's content once per request; generateMetadata + the page share it.
 const getByPath = cache((path: string) => getClient().getContentByPath(path));
@@ -121,5 +123,14 @@ export default async function Page({ params }: Props) {
     notFound();
   }
 
-  return <OptimizelyComponent content={content[0]} />;
+  // Tree-derived breadcrumbs render above every listing/detail page (canonical,
+  // automatic — no per-component wiring).
+  const crumbs = await getBreadcrumbs(`/${slug.join('/')}/`);
+
+  return (
+    <>
+      <Breadcrumbs crumbs={crumbs} />
+      <OptimizelyComponent content={content[0]} />
+    </>
+  );
 }

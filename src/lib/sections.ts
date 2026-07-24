@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { getClient } from '@optimizely/cms-sdk';
 
 /**
@@ -44,9 +45,7 @@ type AnyChild = Node & { priceBand?: string | null; _metadata?: { url?: { defaul
 
 const priceMeta = (band?: string | null) => (band && band !== 'free' ? band : band === 'free' ? 'Free' : null);
 
-export type SectionChildrenPage = { items: SectionCardItem[]; total: number };
-
-/** Supported sorts (generic, interface-level so one query serves every section). */
+/** Supported sorts (interface-level `_metadata` fields, so every child type sorts). */
 export type SortKey = 'name' | '-name' | 'newest';
 const ORDER_BY: Record<SortKey, string> = {
   name: '{ _metadata: { displayName: ASC } }',
@@ -55,45 +54,112 @@ const ORDER_BY: Record<SortKey, string> = {
 };
 export const isSortKey = (v: string | undefined): v is SortKey => v === 'name' || v === '-name' || v === 'newest';
 
+/** The concrete child type of a section (drives type-specific filters + fields). */
+export type ChildType = 'PointOfInterest' | 'Area' | 'Event';
+const TYPE_FIELDS: Record<ChildType, string> = {
+  PointOfInterest: 'name summary priceBand',
+  Area: 'name summary',
+  Event: 'name summary startDate endDate',
+};
+/** Which facets each child type supports (drives the FilterControls UI). */
+export const TYPE_FACETS: Record<ChildType, Array<'tag' | 'price'>> = {
+  PointOfInterest: ['price', 'tag'],
+  Event: ['tag'],
+  Area: [],
+};
+
+export type Filters = { tag?: string; price?: string }; // tag = slug, price = band
+export type SectionChildrenPage = { items: SectionCardItem[]; total: number; childType: ChildType | null };
+
+export type TagOption = { name: string; slug: string; key: string };
+
+/** All taxonomy terms (name/slug/key), for the tag facet UI + slug→key resolution. */
+export const getTags = cache(async (): Promise<TagOption[]> => {
+  try {
+    const data = (await getClient().request(
+      `query { Tag(orderBy: { name: ASC }, limit: 100) { items { name slug _metadata { key } } } }`,
+      {},
+    )) as { Tag?: { items?: Array<{ name?: string; slug?: string; _metadata?: { key?: string } }> } };
+    return (data?.Tag?.items ?? [])
+      .filter((t) => t.slug && t._metadata?.key)
+      .map((t) => ({ name: t.name ?? t.slug!, slug: t.slug!, key: t._metadata!.key! }));
+  } catch {
+    return [];
+  }
+});
+
+/** Detect the concrete child type of a section by peeking at one child. */
+const detectChildType = cache(async (containerKey: string): Promise<ChildType | null> => {
+  try {
+    const data = (await getClient().request(
+      `query($c: String!) { _Page(where: { _metadata: { container: { eq: $c } } }, limit: 1) { items { _metadata { types } } } }`,
+      { c: containerKey },
+    )) as { _Page?: { items?: Array<{ _metadata?: { types?: string[] } }> } };
+    const types = data?._Page?.items?.[0]?._metadata?.types ?? [];
+    return (['PointOfInterest', 'Area', 'Event'] as ChildType[]).find((t) => types.includes(t)) ?? null;
+  } catch {
+    return null;
+  }
+});
+
 /**
- * Generic, server-PAGINATED children query for the SectionListing block — one engine
- * for ALL section pages (Places to Visit, Neighbourhoods, Events). Uses inline
- * fragments so each child type contributes its own fields (POI price, Event dates)
- * while sharing one card. Ordering is server-side (by displayName) so pages are
- * stable. Returns the page slice + the grand `total` for the pager. Guarded → empty.
+ * Type-aware, server-paginated + FILTERED children query for the SectionListing
+ * block — the listing engine for every section. It auto-detects the child type
+ * (POI/Area/Event) so it can query the concrete type and apply type-specific facet
+ * filters (`tags.key`, `priceBand`) that the `_Page` interface can't express.
+ * Server-side sort + skip/limit + total. Guarded → empty page.
  */
 export async function getSectionChildren(
   containerKey: string,
-  { skip = 0, limit = 12, sort = 'name' }: { skip?: number; limit?: number; sort?: SortKey } = {},
+  {
+    skip = 0,
+    limit = 12,
+    sort = 'name',
+    filters = {},
+  }: { skip?: number; limit?: number; sort?: SortKey; filters?: Filters } = {},
 ): Promise<SectionChildrenPage> {
+  const childType = await detectChildType(containerKey);
+  if (!childType) return { items: [], total: 0, childType: null };
+
   try {
     const orderBy = ORDER_BY[sort] ?? ORDER_BY.name; // controlled value — safe to inline
+    const facets = TYPE_FACETS[childType];
+
+    const wheres = ['_metadata: { container: { eq: $c } }'];
+    const decls = ['$c: String!', '$skip: Int!', '$limit: Int!'];
+    const vars: Record<string, unknown> = { c: containerKey, skip, limit };
+
+    if (filters.tag && facets.includes('tag')) {
+      const tagKey = (await getTags()).find((t) => t.slug === filters.tag)?.key;
+      if (tagKey) {
+        wheres.push('tags: { key: { eq: $tagKey } }');
+        decls.push('$tagKey: String!');
+        vars.tagKey = tagKey;
+      }
+    }
+    if (filters.price && facets.includes('price')) {
+      wheres.push('priceBand: { eq: $price }');
+      decls.push('$price: String!');
+      vars.price = filters.price;
+    }
+
     const data = (await getClient().request(
-      `query($c: String!, $skip: Int!, $limit: Int!) {
-        _Page(
-          where: { _metadata: { container: { eq: $c } } }
-          orderBy: ${orderBy}
-          skip: $skip
-          limit: $limit
-        ) {
+      `query(${decls.join(', ')}) {
+        ${childType}(where: { ${wheres.join(', ')} }, orderBy: ${orderBy}, skip: $skip, limit: $limit) {
           total
-          items {
-            _metadata { displayName url { default } types }
-            ... on PointOfInterest { name summary priceBand }
-            ... on Area { name summary }
-            ... on Event { name summary startDate endDate }
-          }
+          items { _metadata { displayName url { default } types } ${TYPE_FIELDS[childType]} }
         }
       }`,
-      { c: containerKey, skip, limit },
-    )) as { _Page?: { total?: number; items?: AnyChild[] } };
-    const items = (data?._Page?.items ?? []).map((n) => {
-      const isEvent = n._metadata?.types?.includes('Event');
-      const meta = isEvent ? eventMeta(n) : priceMeta(n.priceBand);
+      vars,
+    )) as Record<string, { total?: number; items?: AnyChild[] } | undefined>;
+
+    const result = data?.[childType];
+    const items = (result?.items ?? []).map((n) => {
+      const meta = childType === 'Event' ? eventMeta(n) : priceMeta(n.priceBand);
       return toCard({ ...n, name: n.name ?? n._metadata?.displayName ?? 'Untitled' }, meta);
     });
-    return { items, total: data?._Page?.total ?? items.length };
+    return { items, total: result?.total ?? items.length, childType };
   } catch {
-    return { items: [], total: 0 };
+    return { items: [], total: 0, childType };
   }
 }

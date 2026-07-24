@@ -38,7 +38,7 @@ export function Pagination({
       <ul className="flex flex-wrap items-center justify-center gap-2">
         <li>
           {page > 1 ? (
-            <Link href={pageHref(state, page - 1)} rel="prev" className={arrowCls} aria-label="Previous page">
+            <Link href={pageHref(state, page - 1)} scroll={false} rel="prev" className={arrowCls} aria-label="Previous page">
               ← Prev
             </Link>
           ) : (
@@ -52,7 +52,7 @@ export function Pagination({
                 {p}
               </span>
             ) : (
-              <Link href={pageHref(state, p)} className={numberCls} aria-label={`Page ${p}`}>
+              <Link href={pageHref(state, p)} scroll={false} className={numberCls} aria-label={`Page ${p}`}>
                 {p}
               </Link>
             )}
@@ -60,7 +60,7 @@ export function Pagination({
         ))}
         <li>
           {page < pageCount ? (
-            <Link href={pageHref(state, page + 1)} rel="next" className={arrowCls} aria-label="Next page">
+            <Link href={pageHref(state, page + 1)} scroll={false} rel="next" className={arrowCls} aria-label="Next page">
               Next →
             </Link>
           ) : (

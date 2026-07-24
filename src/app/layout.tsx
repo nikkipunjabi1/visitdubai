@@ -34,6 +34,7 @@ import ImageMedia, { ImageMediaContentType } from '@/components/media/ImageMedia
 import Area, { AreaContentType } from '@/components/content/Area';
 import { CategoryContentType } from '@/components/content/Category';
 import { TagContentType } from '@/components/content/Tag';
+import { FolderContentType } from '@/components/content/Folder';
 import EventDetail, { EventContentType } from '@/components/content/Event';
 
 import type { Metadata } from 'next';
@@ -66,6 +67,7 @@ initContentTypeRegistry([
   EventContentType,
   TagContentType,
   CategoryContentType,
+  FolderContentType,
   ImageMediaContentType,
 ]);
 

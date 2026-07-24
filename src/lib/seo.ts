@@ -21,10 +21,11 @@ const DEFAULTS: SiteSettings = {
 };
 
 /**
- * The current site's Start Page key (the content at "/"). Site Settings is a child
- * of the Start Page, so we scope the settings lookup to it — this is what makes it
- * multisite-safe (each site resolves ITS OWN settings; when the frontend becomes
- * host-aware, "/" already resolves per host). Cached per request.
+ * The current site's Start Page key (the content at "/"). Site Settings lives
+ * somewhere UNDER the Start Page (directly, or inside a "Settings" folder), so we
+ * scope the settings lookup to that subtree — this is what makes it multisite-safe
+ * (each site resolves ITS OWN settings; when the frontend becomes host-aware, "/"
+ * already resolves per host). Cached per request.
  */
 const getStartPageKey = cache(async (): Promise<string | null> => {
   try {
@@ -39,11 +40,13 @@ const getStartPageKey = cache(async (): Promise<string | null> => {
 export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
   try {
     const startKey = await getStartPageKey();
-    // Scope Site Settings to this site's Start Page (best practice); fall back to an
-    // unscoped singleton lookup if the start page can't be resolved.
+    // Scope Site Settings to this site's Start Page SUBTREE (best practice). We match
+    // on `_metadata.path` (the ancestor chain) rather than the direct `container`, so
+    // it resolves whether Site Settings sits directly under the start page or inside a
+    // "Settings" folder. Falls back to an unscoped singleton lookup if "/" can't resolve.
     const data = (await getClient().request(
       startKey
-        ? `query($c: String!) { SiteSettings(where: { _metadata: { container: { eq: $c } } }, limit: 1) { items { siteName titleTagline titleSeparator } } }`
+        ? `query($c: String!) { SiteSettings(where: { _metadata: { path: { eq: $c } } }, limit: 1) { items { siteName titleTagline titleSeparator } } }`
         : `query { SiteSettings(limit: 1) { items { siteName titleTagline titleSeparator } } }`,
       startKey ? { c: startKey } : {},
     )) as { SiteSettings?: { items?: Array<Partial<SiteSettings>> } };

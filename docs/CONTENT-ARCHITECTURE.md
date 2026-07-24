@@ -22,9 +22,9 @@ Root
 └─ This is Dubai            HomePage Experience  ← Home = Site Root = Start Page  → /
    ├─ Places to Visit       PlacesToVisitPage                      → /places-to-visit
    │   └─ Point of Interest…                                        → /places-to-visit/<slug>
-   ├─ Events                EventsPage                             → /events            [next]
+   ├─ Events                EventsPage                             → /events
    │   └─ Event…                                                    → /events/<slug>
-   ├─ Neighbourhoods        NeighbourhoodsPage                     → /neighbourhoods    [next]
+   ├─ Neighbourhoods        NeighbourhoodsPage                     → /neighbourhoods
    │   └─ Area… (Downtown, Marina, Old Dubai)                       → /neighbourhoods/<slug>
    ├─ Taxonomy              Folder (not in site nav)
    │   └─ Tag… (Landmarks, Beaches, Festivals, Luxury…)             referenced for facets + AI

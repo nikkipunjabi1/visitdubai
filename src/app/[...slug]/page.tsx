@@ -10,10 +10,12 @@ import { getSiteSettings, buildContentMetadata, type PageSeo } from '@/lib/seo';
 // Fetch a path's content once per request; generateMetadata + the page share it.
 const getByPath = cache((path: string) => getClient().getContentByPath(path));
 
-// Config / data content types that must NEVER be served as a public page (no URL,
-// not indexable) — e.g. the Site Settings singleton. They live in the tree for
-// authoring but the router treats their paths as 404. See docs/CONTENT-ARCHITECTURE.md §4.
-const NON_ROUTABLE_TYPES = new Set(['SiteSettings', 'Tag']);
+// Config / data / organizational content that must NEVER be served as a public
+// page (no URL, not indexable) — the Site Settings singleton, Tag taxonomy terms,
+// and organizational folders (Taxonomy, Settings). They live in the tree for
+// authoring but the router treats their paths as 404. `_Folder` is the folder base
+// type, so any folder is caught. See docs/CONTENT-ARCHITECTURE.md §4.
+const NON_ROUTABLE_TYPES = new Set(['SiteSettings', 'Tag', 'Folder', '_Folder']);
 const isNonRoutable = (types: string[] = []) => types.some((t) => NON_ROUTABLE_TYPES.has(t));
 
 /**

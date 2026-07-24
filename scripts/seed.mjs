@@ -42,6 +42,8 @@ const REFS = (slugs) => ({ value: slugs.map((s) => `cms://content/${keyFor(s)}`)
 const tagKey = (slug) => keyFor(`tag:${slug}`);
 const TAGREFS = (slugs) => ({ value: slugs.map((s) => `cms://content/${tagKey(s)}`) });
 const PLACES_KEY = keyFor('places-to-visit');
+const NEIGHBOURHOODS_KEY = keyFor('neighbourhoods');
+const EVENTS_KEY = keyFor('events');
 
 async function getToken() {
   const res = await fetch(`${GATEWAY}/oauth/token`, {
@@ -53,12 +55,19 @@ async function getToken() {
   return (await res.json()).access_token;
 }
 
-async function api(token, method, path, body, extraHeaders = {}) {
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function api(token, method, path, body, extraHeaders = {}, attempt = 1) {
   const res = await fetch(`${GATEWAY}/v1${path}`, {
     method,
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', ...extraHeaders },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
+  // The CMA rate-limits bursts (429). Back off and retry so the seed self-throttles.
+  if (res.status === 429 && attempt <= 6) {
+    await sleep(1500 * attempt);
+    return api(token, method, path, body, extraHeaders, attempt + 1);
+  }
   const text = await res.text();
   let json = null;
   try {
@@ -112,19 +121,40 @@ async function upsert(token, { slug, key: providedKey, contentType, container, r
 // Seed data (royalty-free/factual; real place names used descriptively).
 // ---------------------------------------------------------------------------
 
+// Section pages live UNDER Home (the site root) → /<segment>. Home.mayContainTypes
+// allows them. Their children (POIs, Areas, Events) nest under them.
 const listingPages = [
   {
     slug: 'places-to-visit',
-    // Under the site root (sibling of the Home experience → resolves to
-    // /places-to-visit/). Experiences can't parent pages, and root-level pages
-    // route from "/", so this yields the URL we want without nesting under Home.
     contentType: 'PlacesToVisitPage',
-    container: ROOT,
+    container: HOME,
     displayName: 'Places to Visit',
     properties: {
       heading: S('Where Dubai comes to life'),
       intro: S('From record-breaking landmarks to quiet heritage lanes — a curated guide to the city’s most memorable places.'),
       metaDescription: S('Explore the best places to visit in Dubai — landmarks, beaches, dining and hidden gems.'),
+    },
+  },
+  {
+    slug: 'neighbourhoods',
+    contentType: 'NeighbourhoodsPage',
+    container: HOME,
+    displayName: 'Neighbourhoods',
+    properties: {
+      heading: S('Every district has a story'),
+      intro: S('From Downtown’s skyline to Old Dubai’s souks — explore the city one neighbourhood at a time.'),
+      metaDescription: S('Explore Dubai’s neighbourhoods — Downtown, Marina, Old Dubai and beyond.'),
+    },
+  },
+  {
+    slug: 'events',
+    contentType: 'EventsPage',
+    container: HOME,
+    displayName: 'Events',
+    properties: {
+      heading: S('What’s on in Dubai'),
+      intro: S('Festivals, races and seasonal celebrations across the city — plan your visit around the moments that matter.'),
+      metaDescription: S('What’s on in Dubai — festivals, events and seasonal highlights.'),
     },
   },
 ];
@@ -168,12 +198,12 @@ async function main() {
   console.log(`Seeding → ${GATEWAY} (locale ${LOCALE})\n`);
   const token = await getToken();
 
-  for (const p of listingPages) await upsert(token, { slug: p.slug, contentType: p.contentType, container: p.container, routable: true, displayName: p.displayName, properties: p.properties });
-  for (const a of areas) await upsert(token, { slug: a.slug, contentType: 'Area', container: ROOT, routable: true, displayName: a.displayName, properties: a.props });
+  for (const p of listingPages) await upsert(token, { slug: p.slug, contentType: p.contentType, container: p.container, routable: true, displayName: p.displayName, properties: p.properties, reparent: true });
+  for (const a of areas) await upsert(token, { slug: a.slug, contentType: 'Area', container: NEIGHBOURHOODS_KEY, routable: true, displayName: a.displayName, properties: a.props, reparent: true });
   for (const t of tags) await upsert(token, { slug: t.slug, key: tagKey(t.slug), contentType: 'Tag', container: HOME, routable: true, displayName: t.displayName, properties: t.props });
   // POIs live under Places to Visit → /places-to-visit/<slug>. reparent moves any already-seeded (flat) POIs.
   for (const p of pois) await upsert(token, { slug: p.slug, contentType: 'PointOfInterest', container: PLACES_KEY, routable: true, displayName: p.displayName, properties: p.props, reparent: true });
-  for (const e of events) await upsert(token, { slug: e.slug, contentType: 'Event', container: ROOT, routable: true, displayName: e.displayName, properties: e.props });
+  for (const e of events) await upsert(token, { slug: e.slug, contentType: 'Event', container: EVENTS_KEY, routable: true, displayName: e.displayName, properties: e.props, reparent: true });
 
   console.log('\nDone.');
 }

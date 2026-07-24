@@ -6,6 +6,8 @@ import {
 } from '@optimizely/cms-sdk/react/server';
 import { SeoMetadataContract } from './SeoMetadata';
 import { PlacesToVisitPageContentType } from './PlacesToVisitPage';
+import { NeighbourhoodsPageContentType } from './NeighbourhoodsPage';
+import { EventsPageContentType } from './EventsPage';
 import { AreaContentType } from './Area';
 import { EventContentType } from './Event';
 import { TagContentType } from './Tag';
@@ -27,6 +29,8 @@ export const HomePageContentType = contentType({
   // The site root contains the section pages + this site's settings.
   mayContainTypes: [
     PlacesToVisitPageContentType,
+    NeighbourhoodsPageContentType,
+    EventsPageContentType,
     AreaContentType,
     EventContentType,
     TagContentType,

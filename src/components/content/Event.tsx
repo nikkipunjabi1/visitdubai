@@ -1,4 +1,8 @@
-import { contentType } from '@optimizely/cms-sdk';
+import { contentType, type ContentProps } from '@optimizely/cms-sdk';
+import { getPreviewUtils } from '@optimizely/cms-sdk/react/server';
+import Link from 'next/link';
+import { SectionShell } from '@/components/ui/SectionShell';
+import { JsonLd } from '@/components/ui/JsonLd';
 import { SeoMetadataContract } from './SeoMetadata';
 import { AreaContentType } from './Area';
 import { TagContentType } from './Tag';
@@ -21,3 +25,56 @@ export const EventContentType = contentType({
     ticketUrl: { type: 'url', displayName: 'Ticket URL', group: 'content', sortOrder: 9 },
   },
 });
+
+const fmt = (iso?: string | null) =>
+  iso ? new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
+
+export default function Event({ content }: { content: ContentProps<typeof EventContentType> }) {
+  const { pa } = getPreviewUtils(content);
+  const start = fmt(content.startDate);
+  const end = fmt(content.endDate);
+  const dates = start ? (end && end !== start ? `${start} – ${end}` : start) : null;
+  const ticket = content.ticketUrl?.default ?? undefined;
+  const jsonLd: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: content.name,
+    ...(content.summary ? { description: content.summary } : {}),
+    ...(content.startDate ? { startDate: content.startDate } : {}),
+    ...(content.endDate ? { endDate: content.endDate } : {}),
+  };
+
+  return (
+    <SectionShell theme="dark" spacing="spacious">
+      <JsonLd data={jsonLd} />
+      <article className="mx-auto max-w-page px-6 md:px-10 lg:px-16">
+        <Link href="/events" className="text-sm text-accent hover:underline">
+          ← Events
+        </Link>
+        <header className="mt-6 max-w-3xl">
+          {dates ? <p className="eyebrow">{dates}</p> : null}
+          <h1 className="mt-4 text-[clamp(2.5rem,6vw,4.5rem)]" {...pa('name')}>
+            {content.name}
+          </h1>
+          {content.summary ? (
+            <p className="mt-6 text-xl text-muted" {...pa('summary')}>
+              {content.summary}
+            </p>
+          ) : null}
+        </header>
+        {ticket ? (
+          <div className="mt-10 border-t border-line pt-8">
+            <a
+              href={ticket}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block rounded-full bg-champagne px-7 py-3 text-sm font-semibold text-obsidian transition hover:bg-champagne-hi"
+            >
+              Tickets &amp; info →
+            </a>
+          </div>
+        ) : null}
+      </article>
+    </SectionShell>
+  );
+}

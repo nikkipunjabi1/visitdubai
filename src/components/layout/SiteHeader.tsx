@@ -8,6 +8,8 @@ import { Wordmark } from '@/components/ui/Wordmark';
 const NAV: { href: string; label: string }[] = [
   { href: '/', label: 'Home' },
   { href: '/places-to-visit', label: 'Places to Visit' },
+  { href: '/neighbourhoods', label: 'Neighbourhoods' },
+  { href: '/events', label: 'Events' },
 ];
 
 export function SiteHeader() {

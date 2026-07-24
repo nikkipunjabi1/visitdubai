@@ -8,7 +8,6 @@ import { SeoMetadataContract } from './SeoMetadata';
 import { AreaContentType } from './Area';
 import { EventContentType } from './Event';
 import { TagContentType } from './Tag';
-import { SiteSettingsContentType } from './SiteSettings';
 import { FolderContentType } from './Folder';
 import {
   PlacesToVisitContentType,
@@ -29,9 +28,9 @@ export const HomePageContentType = contentType({
   displayName: 'Home / Site Root',
   baseType: '_experience',
   extends: SeoMetadataContract,
-  // The site root contains the section pages + organizational folders
-  // (Taxonomy → Tags, Settings → Site Settings). Tag/SiteSettings stay listed so
-  // existing direct children still validate during/after the move into folders.
+  // The site root contains the section pages + the Taxonomy folder (Tags). Site
+  // Settings is now a shared block (app assets), not a page child. (Tag moves to a
+  // shared block in a later step; kept here until then.)
   mayContainTypes: [
     // Visual Builder section experiences.
     PlacesToVisitContentType,
@@ -41,7 +40,6 @@ export const HomePageContentType = contentType({
     EventContentType,
     FolderContentType,
     TagContentType,
-    SiteSettingsContentType,
   ],
   properties: {
     internalTitle: {

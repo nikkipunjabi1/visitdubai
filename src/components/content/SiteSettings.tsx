@@ -1,15 +1,25 @@
 import { contentType } from '@optimizely/cms-sdk';
 
 /**
- * SiteSettings — a singleton global config item (create one instance in the CMS).
- * Drives site-wide SEO/crawl behaviour. `allowSearchIndexing` is the master
- * crawl switch: it is treated as OFF by default (see src/app/robots.ts), so the
- * Vercel demo is NOT indexed until someone explicitly turns it on for a launch.
+ * SiteSettings — a singleton global config item, modelled as a **shared block**
+ * (`_component`) living in the application's shared-assets folder ("For This
+ * Application"). This is the natural home for page-less global config: editors find
+ * and edit it from the Shared Blocks panel — no page tree, no per-type access grants.
+ *
+ * Drives site-wide SEO/crawl behaviour. `allowSearchIndexing` is the master crawl
+ * switch: treated as OFF by default (see src/app/robots.ts), so the demo is NOT
+ * indexed until someone explicitly turns it on for a launch. Fetched by
+ * src/lib/seo.ts (scoped to the site's Start Page subtree via `_metadata.path`).
  */
 export const SiteSettingsContentType = contentType({
-  key: 'SiteSettings',
+  // New key: base types are immutable, so the block can't reuse the retired `_page`
+  // `SiteSettings` key. The GraphQL root type is therefore `SiteConfiguration`.
+  key: 'SiteConfiguration',
   displayName: 'Site Settings',
-  baseType: '_page',
+  baseType: '_component',
+  // Needed so the block is exposed as a Graph root type (and creatable as a shared
+  // block). It's config, not a visual element, so authors won't actually place it.
+  compositionBehaviors: ['elementEnabled'],
   properties: {
     // --- Global branding used in every page's <title> ---
     siteName: {

@@ -1,6 +1,5 @@
 import { contentType } from '@optimizely/cms-sdk';
 import { TagContentType } from './Tag';
-import { SiteSettingsContentType } from './SiteSettings';
 
 /**
  * Folder — an organizational container in the CMS content tree. Used to keep the
@@ -19,5 +18,5 @@ export const FolderContentType = contentType({
   key: 'Folder',
   displayName: 'Folder',
   baseType: '_folder',
-  mayContainTypes: [TagContentType, SiteSettingsContentType],
+  mayContainTypes: [TagContentType],
 });

@@ -46,11 +46,11 @@ export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
     // "Settings" folder. Falls back to an unscoped singleton lookup if "/" can't resolve.
     const data = (await getClient().request(
       startKey
-        ? `query($c: String!) { SiteSettings(where: { _metadata: { path: { eq: $c } } }, limit: 1) { items { siteName titleTagline titleSeparator } } }`
-        : `query { SiteSettings(limit: 1) { items { siteName titleTagline titleSeparator } } }`,
+        ? `query($c: String!) { SiteConfiguration(where: { _metadata: { path: { eq: $c } } }, limit: 1) { items { siteName titleTagline titleSeparator } } }`
+        : `query { SiteConfiguration(limit: 1) { items { siteName titleTagline titleSeparator } } }`,
       startKey ? { c: startKey } : {},
-    )) as { SiteSettings?: { items?: Array<Partial<SiteSettings>> } };
-    const s = data?.SiteSettings?.items?.[0] ?? {};
+    )) as { SiteConfiguration?: { items?: Array<Partial<SiteSettings>> } };
+    const s = data?.SiteConfiguration?.items?.[0] ?? {};
     return {
       siteName: s.siteName || DEFAULTS.siteName,
       titleTagline: s.titleTagline || DEFAULTS.titleTagline,

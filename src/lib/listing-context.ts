@@ -39,3 +39,19 @@ export function pageHref(state: ListingState, targetPage: number): string {
   const qs = params.toString();
   return qs ? `${state.path}?${qs}` : state.path;
 }
+
+/**
+ * Build an href that applies `changes` to the current query (a null value removes
+ * the param) and always resets to page 1 — used by sort/filter controls, since
+ * changing them should return to the first page.
+ */
+export function controlHref(state: ListingState, changes: Record<string, string | null>): string {
+  const params = new URLSearchParams(state.query);
+  for (const [k, v] of Object.entries(changes)) {
+    if (v === null || v === '') params.delete(k);
+    else params.set(k, v);
+  }
+  params.delete('page');
+  const qs = params.toString();
+  return qs ? `${state.path}?${qs}` : state.path;
+}

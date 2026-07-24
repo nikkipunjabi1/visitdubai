@@ -78,6 +78,15 @@ const priceMeta = (band?: string | null) => (band && band !== 'free' ? band : ba
 
 export type SectionChildrenPage = { items: SectionCardItem[]; total: number };
 
+/** Supported sorts (generic, interface-level so one query serves every section). */
+export type SortKey = 'name' | '-name' | 'newest';
+const ORDER_BY: Record<SortKey, string> = {
+  name: '{ _metadata: { displayName: ASC } }',
+  '-name': '{ _metadata: { displayName: DESC } }',
+  newest: '{ _metadata: { created: DESC } }',
+};
+export const isSortKey = (v: string | undefined): v is SortKey => v === 'name' || v === '-name' || v === 'newest';
+
 /**
  * Generic, server-PAGINATED children query for the SectionListing block — one engine
  * for ALL section pages (Places to Visit, Neighbourhoods, Events). Uses inline
@@ -87,14 +96,15 @@ export type SectionChildrenPage = { items: SectionCardItem[]; total: number };
  */
 export async function getSectionChildren(
   containerKey: string,
-  { skip = 0, limit = 12 }: { skip?: number; limit?: number } = {},
+  { skip = 0, limit = 12, sort = 'name' }: { skip?: number; limit?: number; sort?: SortKey } = {},
 ): Promise<SectionChildrenPage> {
   try {
+    const orderBy = ORDER_BY[sort] ?? ORDER_BY.name; // controlled value — safe to inline
     const data = (await getClient().request(
       `query($c: String!, $skip: Int!, $limit: Int!) {
         _Page(
           where: { _metadata: { container: { eq: $c } } }
-          orderBy: { _metadata: { displayName: ASC } }
+          orderBy: ${orderBy}
           skip: $skip
           limit: $limit
         ) {

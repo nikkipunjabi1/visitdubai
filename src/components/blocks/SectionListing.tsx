@@ -9,7 +9,8 @@ import {
 import { LayoutDisplayTemplate } from './LayoutDisplayTemplate';
 import { SectionCardGrid } from '@/components/content/SectionCard';
 import { Pagination } from '@/components/ui/Pagination';
-import { getSectionChildren } from '@/lib/sections';
+import { ListingControls } from '@/components/ui/ListingControls';
+import { getSectionChildren, isSortKey, type SortKey } from '@/lib/sections';
 import { getListingState } from '@/lib/listing-context';
 
 /**
@@ -68,13 +69,14 @@ export default async function SectionListing({ content, displaySettings }: Props
   const sourceKey = content.source?.key;
   const pageSize = Number.parseInt(content.pageSize ?? '', 10) || 12;
 
-  // The route seeds the current page into the request-scoped store (searchParams
-  // don't reach this block directly — see src/lib/listing-context.ts).
+  // The route seeds page + query (sort/filters) into the request-scoped store
+  // (searchParams don't reach this block directly — see src/lib/listing-context.ts).
   const state = getListingState();
   const page = Math.max(1, state.page);
+  const sort: SortKey = isSortKey(state.query.sort) ? state.query.sort : 'name';
 
   const { items, total } = sourceKey
-    ? await getSectionChildren(sourceKey, { skip: (page - 1) * pageSize, limit: pageSize })
+    ? await getSectionChildren(sourceKey, { skip: (page - 1) * pageSize, limit: pageSize, sort })
     : { items: [], total: 0 };
 
   return (
@@ -88,6 +90,7 @@ export default async function SectionListing({ content, displaySettings }: Props
           {content.heading}
         </h2>
       ) : null}
+      <ListingControls state={state} total={total} activeSort={sort} />
       <SectionCardGrid items={items} />
       <Pagination state={state} total={total} pageSize={pageSize} />
     </SectionShell>

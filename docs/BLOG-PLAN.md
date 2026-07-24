@@ -39,6 +39,7 @@ Blog when we hit any of:
 | 10 | Using Optimizely Opal for Arabic translation | New/learning | 4 |
 | 11 | I open-sourced a stakeholder-preview module for Optimizely SaaS — here's how | Module | 5 |
 | 12 | **How to connect Optimizely CMP (Content Marketing Platform) with Optimizely SaaS CMS** — publishing/asset flow between CMP and CMS SaaS _(outline only for now; detailed write-up later)_ | New/learning | TBD |
+| 13 | **The Page That Shouldn't Have a URL: Best-Practice Site Settings in Optimizely SaaS CMS** — where global settings belong in the content tree, how to keep them off the public web (non-routable / router-excluded), the placement + security guardrails, and the multisite-safe GraphQL query (scope by Start Page key). Includes the options considered + the test queries proving no public URL. | 🧩 Challenge / New | 2 |
 
 ## Post skeleton (reuse for each)
 1. The problem / what I set out to do

@@ -1,4 +1,4 @@
-# Architecture — Visit Dubai
+# Architecture — This is Dubai
 
 _Baseline: **Optimizely's official JavaScript SDK, `@optimizely/cms-sdk`**, scaffolded with
 `@optimizely/cms-create-app`. The `@remkoj/*` community demo (`cms-saas-vercel-demo`) is kept as

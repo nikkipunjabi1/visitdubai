@@ -1,4 +1,4 @@
-# Sprints — Visit Dubai
+# Sprints — This is Dubai
 
 _Small, credit-efficient sprints. Each sprint has a single clear goal, a short task list, a
 concrete **deliverable**, and an **exit check**. **I always ask before starting a new phase.**_
@@ -18,13 +18,13 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · 🚦 = phase gate (I as
 ## Phase 0 — Foundations 🟢 (planning)
 - [x] Kickoff decisions, research, and the full planning doc set.
 - [x] SDK decision: **official `@optimizely/cms-sdk`** (demo = reference); skills via marketplace.
-- [x] **S0.1** Draft blog post #1 ("building in the open") → `blog/01-building-visit-dubai-in-the-open.md`. 🟢
+- [x] **S0.1** Draft blog post #1 ("building in the open") → `blog/01-building-this-is-dubai-in-the-open.md`. 🟢
 - [x] **S0.2** Add the **Optimizely CMS Skills** — installed to `~/.claude/skills/` (all 4:
   setup/model/model-react/preview). 🟢
 
 ## 🚦 Phase 1 — Scaffold & baseline running  _(ask before starting)_
 Goal: a fresh official-SDK Next.js app runs locally against your dev CMS and deploys to Vercel,
-with Visual Builder + live preview confirmed working — **before** we add Visit Dubai specifics.
+with Visual Builder + live preview confirmed working — **before** we add This is Dubai specifics.
 
 - [x] **S1.1 — Scaffold with the official SDK** 🟡 ✅
   Scaffolded `nextjs-starter` (Next 16.2.1, React 19.2, `@optimizely/cms-sdk` 2.1) into the repo
@@ -47,7 +47,7 @@ with Visual Builder + live preview confirmed working — **before** we add Visit
   with the real scaffold + SDK APIs.
 
 ## 🚦 Phase 2 — Content model + multi-page site  _(ask before starting)_
-Goal: Visit Dubai content types, the luxury design system, and all page templates — a real
+Goal: This is Dubai content types, the luxury design system, and all page templates — a real
 multi-page site. 🔴 → split into these sprints:
 
 - [x] **S2.1 — Design foundation + layout primitives** 🟡 ✅
@@ -68,7 +68,7 @@ multi-page site. 🔴 → split into these sprints:
 - [~] **S2.4 — Home page experience** 🟡 _(code done; CMS authoring is the user's step)_
   ✅ `HomePage` `_experience` type (extends SEO) + React component (`OptimizelyComposition`),
   pushed; `/` renders the published Home via `getContentByPath('/')` with a graceful fallback.
-  ⏭ **User (CMS UI):** create the "Visit Dubai" application (host `localhost:3000`, HTTPS, preview
+  ⏭ **User (CMS UI):** create the "This is Dubai" application (host `localhost:3000`, HTTPS, preview
   tokens) + a Home experience as its start page (our API key can't create content/apps —
   Forbidden). Then compose it in VB → completes S1.3 (live preview) + verifies the display settings.
 - [ ] **S2.5 — Listing pages + faceting** (Places/Events/Articles/Tours/Hotels) + **`POICardGrid`**
@@ -90,7 +90,7 @@ multi-page site. 🔴 → split into these sprints:
 ## 🚦 Phase 4 — AI features (Claude)  _(ask before starting)_
 - [ ] **S4.1 — AI Search** (Graph retrieval → Claude → cards) 🔴 — AI-SEARCH.md
 - [ ] **S4.2 — AI Trip Planner** (→ `Itinerary`) 🔴
-- [ ] **S4.3 — "Visit Dubai Concierge" MCP server** (Graph-backed tools; stdio → remote HTTP on
+- [ ] **S4.3 — "This is Dubai Concierge" MCP server** (Graph-backed tools; stdio → remote HTTP on
       Vercel / claude.ai connector; reuses the AI retrieval layer) 🔴 — MCP-SERVER.md
 - [ ] **S4.4 — AI observability + guardrails** (Langfuse; prompts-as-CMS-content; safety rails) 🟡 — AI-PLATFORM.md
 - [ ] **S4.5 — Opal for Arabic translation** (guided) 🟡

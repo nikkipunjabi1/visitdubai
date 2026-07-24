@@ -53,7 +53,7 @@ Two complementary options; **primary is the CMS itself**:
 ## 3. Guardrails (input + output rails)
 A `Guardrail` stage on both sides of the model call; **verdicts are logged** (§1):
 - **Input rails:** prompt-injection / jailbreak detection, PII/sensitive-data screen, **topic-scope
-  check** (only tourism/Visit-Dubai intents), length/rate limits.
+  check** (only tourism/This-is-Dubai intents), length/rate limits.
 - **Grounding:** answer **only** from Graph-retrieved CMS content (RAG grounding) → low hallucination.
 - **Output rails:** **schema validation** (must be valid card/itinerary JSON — enforced via
   structured outputs), toxicity/PII scan, **citation/grounding check** (does the answer reference

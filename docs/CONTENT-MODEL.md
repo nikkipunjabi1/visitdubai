@@ -1,4 +1,4 @@
-# Content Model — Visit Dubai
+# Content Model — This is Dubai
 
 _Draft. Reconciled with the base-type names the forked demo uses (Optimizely SaaS: `_Page`,
 `_Component`, `_Experience`, `_Section`, `_metadata`, etc.)._
@@ -15,7 +15,7 @@ _Draft. Reconciled with the base-type names the forked demo uses (Optimizely Saa
 Rule: **structured/queryable things** are data content types; **presentation** is Visual Builder
 components that query/reference that data. Every routable type carries `SeoMetadata` (see SEO.md).
 
-## Content types (Visit Dubai)
+## Content types (This is Dubai)
 
 ### Routable pages
 | Type | URL | Purpose |

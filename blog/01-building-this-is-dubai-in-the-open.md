@@ -1,5 +1,5 @@
 ---
-title: "Building Visit Dubai in the Open: A Learning Project on Optimizely SaaS CMS"
+title: "Building This is Dubai in the Open: A Learning Project on Optimizely SaaS CMS"
 status: draft
 audience: Optimizely community / dev.to / LinkedIn (long-form)
 author: Nikki Punjabi
@@ -18,7 +18,7 @@ tags: [optimizely, saas-cms, optimizely-graph, visual-builder, nextjs, headless]
 I've decided to build a full, production-shaped website on **Optimizely SaaS CMS** — and document
 every step of it in the open.
 
-The project is **"Visit Dubai"**: an unofficial, demo destination-marketing site inspired by the
+The project is **"This is Dubai"**: an unofficial, demo destination-marketing site inspired by the
 kind of rich, content-heavy tourism experiences we all know. Places to visit, events, guides,
 tours, hotels — the sort of site where content modeling, search, and editorial design actually
 matter.
@@ -35,7 +35,7 @@ Building in the open keeps me honest, and hopefully the write-ups save someone e
 
 ## The stack
 
-Here's what Visit Dubai is built on:
+Here's what This is Dubai is built on:
 
 - **Optimizely SaaS CMS** — the headless, cloud-native CMS.
 - **Optimizely Graph** — the GraphQL content-delivery layer, with **semantic search** (this is

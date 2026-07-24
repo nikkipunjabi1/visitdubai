@@ -1,4 +1,4 @@
-# Component Standards — Visit Dubai
+# Component Standards — This is Dubai
 
 _How every Visual Builder component/section is built, registered, themed, sized, and laid out.
 This is the contract; PRs that add components must satisfy it._

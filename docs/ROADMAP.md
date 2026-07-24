@@ -18,7 +18,7 @@ _Phased plan. Each phase ends with a working, deployable state and (usually) a b
 - **Blog:** _"Getting Optimizely SaaS CMS + Visual Builder running on Vercel with Next.js"_
   (setup gotchas are gold for the community).
 
-## Phase 2 — Visit Dubai content model + multi-page site
+## Phase 2 — This is Dubai content model + multi-page site
 - [ ] Define content types in SaaS CMS (PointOfInterest, Event, Article, Tour, Hotel, Area,
       Itinerary, HomePage + listing pages) with `SeoMetadata` on every routable type
 - [ ] Define Visual Builder experiences/sections/components per **COMPONENT-STANDARDS.md**
@@ -48,7 +48,7 @@ _Phased plan. Each phase ends with a working, deployable state and (usually) a b
 ## Phase 4 — AI features (Claude)
 - [ ] **AI Search**: NL query → Graph retrieval → Claude → rich result cards (AI-SEARCH.md)
 - [ ] **AI Trip Planner**: constraints → itinerary grounded in CMS content
-- [ ] **"Visit Dubai Concierge" MCP server**: Graph-backed tools for any MCP client (stdio →
+- [ ] **"This is Dubai Concierge" MCP server**: Graph-backed tools for any MCP client (stdio →
       remote HTTP on Vercel / claude.ai connector); OSS + MVP candidate (MCP-SERVER.md)
 - [ ] **AI observability + guardrails**: Langfuse, prompts-as-CMS-content, safety rails (AI-PLATFORM.md)
 - [ ] Evaluate **Opal** integration

@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import type { Metadata } from 'next';
 import { getClient } from '@optimizely/cms-sdk';
 
@@ -14,16 +15,37 @@ export type SiteSettings = {
 };
 
 const DEFAULTS: SiteSettings = {
-  siteName: 'Visit Dubai',
+  siteName: 'This is Dubai',
   titleTagline: 'Unofficial Travel & Tourism Guide',
   titleSeparator: '|',
 };
 
-export async function getSiteSettings(): Promise<SiteSettings> {
+/**
+ * The current site's Start Page key (the content at "/"). Site Settings is a child
+ * of the Start Page, so we scope the settings lookup to it — this is what makes it
+ * multisite-safe (each site resolves ITS OWN settings; when the frontend becomes
+ * host-aware, "/" already resolves per host). Cached per request.
+ */
+const getStartPageKey = cache(async (): Promise<string | null> => {
   try {
+    const content = await getClient().getContentByPath('/');
+    const node = content[0] as { _metadata?: { key?: string } } | undefined;
+    return node?._metadata?.key ?? null;
+  } catch {
+    return null;
+  }
+});
+
+export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
+  try {
+    const startKey = await getStartPageKey();
+    // Scope Site Settings to this site's Start Page (best practice); fall back to an
+    // unscoped singleton lookup if the start page can't be resolved.
     const data = (await getClient().request(
-      `query { SiteSettings(limit: 1) { items { siteName titleTagline titleSeparator } } }`,
-      {},
+      startKey
+        ? `query($c: String!) { SiteSettings(where: { _metadata: { container: { eq: $c } } }, limit: 1) { items { siteName titleTagline titleSeparator } } }`
+        : `query { SiteSettings(limit: 1) { items { siteName titleTagline titleSeparator } } }`,
+      startKey ? { c: startKey } : {},
     )) as { SiteSettings?: { items?: Array<Partial<SiteSettings>> } };
     const s = data?.SiteSettings?.items?.[0] ?? {};
     return {
@@ -34,9 +56,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   } catch {
     return DEFAULTS;
   }
-}
+});
 
-/** Next.js title template — the page title fills `%s`, e.g. "Homepage | Unofficial Travel & Tourism Guide | Visit Dubai". */
+/** Next.js title template — the page title fills `%s`, e.g. "Homepage | Unofficial Travel & Tourism Guide | This is Dubai". */
 export function buildTitleTemplate(s: SiteSettings): string {
   const sep = ` ${s.titleSeparator} `;
   return ['%s', s.titleTagline, s.siteName].filter(Boolean).join(sep);

@@ -1,6 +1,7 @@
 /**
- * Wordmark — original "Visit Dubai" wordmark for this demo (NOT the official
- * Visit Dubai logo/trademark). Fraunces display with a champagne accent.
+ * Wordmark — the original "This is Dubai" wordmark for this demo. Entirely
+ * original branding; not affiliated with, and deliberately distinct from, any
+ * official Dubai tourism brand or trademark. Fraunces display + champagne accent.
  */
 export function Wordmark({
   className = '',
@@ -11,10 +12,10 @@ export function Wordmark({
 }) {
   return (
     <Tag
-      aria-label="Visit Dubai"
+      aria-label="This is Dubai"
       className={`font-display text-2xl leading-none tracking-[-0.015em] ${className}`}
     >
-      Visit<span className="text-accent">&nbsp;Dubai</span>
+      This is<span className="text-accent">&nbsp;Dubai</span>
     </Tag>
   );
 }

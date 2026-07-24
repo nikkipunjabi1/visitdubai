@@ -23,10 +23,10 @@ and we **blog the journey** to build toward Optimizely MVP.
 
 | Decision | Choice |
 |----------|--------|
-| Brand name | **"Visit Dubai"** (unofficial demo) — original wordmark + royalty-free imagery; clear not-affiliated disclaimer. **No official logo / copyrighted photos in the public repo.** |
+| Brand name | **"This is Dubai"** (unofficial demo) — original wordmark + royalty-free imagery; clear not-affiliated disclaimer. **No official logo / copyrighted photos in the public repo.** |
 | Baseline codebase | **Official `@optimizely/cms-sdk`** (scaffold via `@optimizely/cms-create-app`); the `@remkoj` demo `cms-saas-vercel-demo` is a **reference only** |
 | Dev tooling | **Optimizely CMS Skills** (`optimizely-setup/model/model-react/preview`) via `/plugin marketplace add episerver/content-js-sdk` |
-| Repo | https://github.com/nikkipunjabi1/visitdubai (user creates/pushes) |
+| Repo | https://github.com/nikkipunjabi1/thisisdubai (user creates/pushes) |
 | Hosting | **Vercel Hobby (free tier)** |
 | First milestone | **Full multi-page site** (home + listing + detail page types) |
 | Localization | **English first**, i18n-ready; add **AR semantic search** on showcase pages (Phase 3); use **Optimizely Opal for AR translation** later (guided) |
@@ -42,7 +42,7 @@ and we **blog the journey** to build toward Optimizely MVP.
   the initial HTML; no page skipped. See SEO.md.
 
 ### Asset & legal hygiene (public repo)
-Original "Visit Dubai" wordmark (not the official trademarked logo). Royalty-free imagery only
+Original "This is Dubai" wordmark (not the official trademarked logo). Royalty-free imagery only
 (Unsplash/Pexels Dubai photos under free licenses) with attributions in `ASSETS.md`. Real place
 names/facts used descriptively. Prominent "unofficial / not affiliated" disclaimer in the UI +
 README. (If exact official assets are ever wanted, keep that to a **private, unpublished** build.)
@@ -93,7 +93,7 @@ Things worth planning for that weren't explicitly mentioned:
    seed-content plan so the demo isn't empty.
 7. **Analytics & measurement** — even lightweight (Vercel Analytics) so we can talk about
    outcomes when blogging; later, Optimizely Data Platform / experimentation results.
-8. **Legal hygiene** — image licensing (Unsplash/Pexels license notes), no real Visit Dubai
+8. **Legal hygiene** — image licensing (Unsplash/Pexels license notes), no real This is Dubai
    trademarks/assets in the public repo. Keep an `ASSETS.md` with attributions.
 9. **Environment & secrets strategy** — Graph single-key (public, read-only) vs app-key+secret
    (server-only); never leak the secret to the client. Document in ARCHITECTURE.md.

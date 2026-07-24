@@ -1,4 +1,4 @@
-# Visit Dubai — Optimizely SaaS CMS + Next.js Demo
+# This is Dubai — Optimizely SaaS CMS + Next.js Demo
 
 > ⚠️ **Unofficial, independent demo project — for learning and showcase purposes only. Not
 > affiliated with, sponsored by, or endorsed by any official tourism authority, destination
@@ -7,7 +7,7 @@
 > **original**; imagery is **royalty-free** only (see `ASSETS.md`). Real place names/facts are
 > used descriptively.
 
-Repo: https://github.com/nikkipunjabi1/visitdubai · Hosting: Vercel (Hobby/free tier).
+Repo: https://github.com/nikkipunjabi1/thisisdubai · Hosting: Vercel (Hobby/free tier).
 
 ## Why this project exists
 
@@ -46,7 +46,7 @@ Repo: https://github.com/nikkipunjabi1/visitdubai · Hosting: Vercel (Hobby/free
 | [docs/SEO.md](docs/SEO.md) | Server-rendered SEO tags + JSON-LD requirements |
 | [docs/AI-SEARCH.md](docs/AI-SEARCH.md) | AI search + trip planner (Graph semantic + Claude; no pgvector) |
 | [docs/AI-PLATFORM.md](docs/AI-PLATFORM.md) | AI observability, prompt admin, guardrails, safety, scaling |
-| [docs/MCP-SERVER.md](docs/MCP-SERVER.md) | "Visit Dubai Concierge" MCP server (Graph-backed tools) |
+| [docs/MCP-SERVER.md](docs/MCP-SERVER.md) | "This is Dubai Concierge" MCP server (Graph-backed tools) |
 | [docs/OPTIMIZELY-RESEARCH.md](docs/OPTIMIZELY-RESEARCH.md) | Findings from official docs + reference repos |
 | [docs/OPTIMIZELY-BEST-PRACTICES.md](docs/OPTIMIZELY-BEST-PRACTICES.md) | Playbook: modeling, VB, Graph, SEO, perf, security, gotchas |
 | [docs/QUALITY.md](docs/QUALITY.md) | Testing/CI strategy + quality gates |

@@ -6,7 +6,7 @@ import { JsonLd } from '@/components/ui/JsonLd';
 import { priceLabel } from '@/lib/pois';
 import { SeoMetadataContract } from './SeoMetadata';
 import { AreaContentType } from './Area';
-import { CategoryContentType } from './Category';
+import { TagContentType } from './Tag';
 
 /**
  * PointOfInterest — a place to visit / thing to do (the "Places to visit" type).
@@ -53,12 +53,13 @@ export const PointOfInterestContentType = contentType({
       group: 'content',
       sortOrder: 5,
     },
-    categories: {
+    tags: {
       type: 'array',
-      displayName: 'Categories',
+      displayName: 'Tags',
+      description: 'Taxonomy terms (theme, cuisine, audience…) — power filtering/facets + AI search.',
       group: 'content',
       sortOrder: 6,
-      items: { type: 'content', allowedTypes: [CategoryContentType] },
+      items: { type: 'contentReference', allowedTypes: [TagContentType] },
     },
     latitude: {
       type: 'float',

@@ -1,4 +1,4 @@
-# Design System — Visit Dubai
+# Design System — This is Dubai
 
 _Direction: **sleek, modern, luxury.** Think a high-end destination brand / luxury travel
 magazine — restrained, confident, expensive-feeling. It must read as crafted product design,
@@ -75,4 +75,4 @@ The luxury signal comes from **restraint + craft**, not decoration.
 - [ ] `tailwind.config` theme extension
 - [ ] `/styleguide` route (type + color + components)
 - [ ] Core components: Hero, Card, Button, Nav, Footer, SearchBar — all in the luxury language
-- [ ] Original **"Visit Dubai" wordmark** (not the official logo) + favicon
+- [ ] Original **"This is Dubai" wordmark** (not the official logo) + favicon

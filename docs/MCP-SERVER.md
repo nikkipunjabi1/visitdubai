@@ -1,6 +1,6 @@
-# Visit Dubai Concierge — MCP Server (Phase 4)
+# This is Dubai Concierge — MCP Server (Phase 4)
 
-_An MCP server that exposes Visit Dubai's CMS content (via Optimizely Graph) as tools any
+_An MCP server that exposes This is Dubai's CMS content (via Optimizely Graph) as tools any
 MCP client can use — Claude Desktop/Code, claude.ai connectors, and eventually **Opal**._
 
 ## Why we're building it
@@ -13,7 +13,7 @@ MCP client can use — Claude Desktop/Code, claude.ai connectors, and eventually
 ## Decisions
 | | |
 |---|---|
-| Use case | **Visit Dubai Concierge** — Graph-backed content tools (end-user facing) |
+| Use case | **This is Dubai Concierge** — Graph-backed content tools (end-user facing) |
 | Transport | **Start local (stdio)** for learning → **promote to remote streamable-HTTP on Vercel** (stakeholders add it as a **claude.ai connector**) |
 | Timing | **Phase 4**, with the AI features — after there's real CMS content to query |
 | SDK | `@modelcontextprotocol/sdk` (TypeScript) |
@@ -43,7 +43,7 @@ Optimizely Graph (semantic + facet + geo)
 In Claude Desktop / claude.ai with the connector added:
 > "Plan me a 3-day luxury Dubai trip with Michelin dining and a desert day."
 → Claude calls `plan_trip` / `search_places` on our MCP server → returns a grounded itinerary
-built from **our Visit Dubai CMS content**. Then: *"What's on this weekend near the marina?"* →
+built from **our This is Dubai CMS content**. Then: *"What's on this weekend near the marina?"* →
 `find_events`. The wow: our content, live, inside any AI — via MCP.
 
 ## Security & ops
